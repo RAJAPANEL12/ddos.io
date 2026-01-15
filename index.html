@@ -394,12 +394,12 @@
             
             <div class="slider-container">
                 <div class="slider-value">Threads: <span id="threadsValue">50</span></div>
-                <input type="range" id="threads" min="1" max="200" value="50" oninput="updateSlider('threads')">
+                <input type="range" id="threads" min="1" max="20000" value="50" oninput="updateSlider('threads')">
             </div>
             
             <div class="slider-container">
                 <div class="slider-value">Requests per Thread: <span id="requestsValue">10</span></div>
-                <input type="range" id="requests" min="1" max="100" value="10" oninput="updateSlider('requests')">
+                <input type="range" id="requests" min="1" max="1000" value="10" oninput="updateSlider('requests')">
             </div>
             
             <div class="slider-container">
@@ -622,9 +622,7 @@
                 return { success: false, error: error.message };
             }
         }
-        
-        // Get random user agent
-        function getRandomUserAgent() {
+    
           // Get random user agent
         function getRandomUserAgent() {
             const userAgents = [
